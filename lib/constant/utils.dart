@@ -40,3 +40,23 @@ showSingleTextInputDialog({
             ],
       ));
 }
+const subDistricts=[
+      'DSC',
+      'Banani',
+      'Darus-Salam',
+      'Demra',
+      'Dhanmondi',
+      'Gulshan',
+      'Jattrabari',
+      'Kafrul',
+      'Mirpur',
+      'Mohammadpur',
+      'Mugda',
+      'Pallabi',
+      'Paltan',
+      'Shahbag',
+      'Uttara',
+      'Wari',
+      'Narayanganj',
+      'Nobinogor Savar'
+];

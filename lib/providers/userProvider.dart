@@ -25,7 +25,7 @@ Future<void>updateUserField( String felid, dynamic value){
 }
 
 Future<String> uploadImage(String? thumbnailImageLocalPath)async {
-  final photoRef= FirebaseStorage.instance.ref().child('productImages/${DateTime.now().microsecondsSinceEpoch}');
+  final photoRef= FirebaseStorage.instance.ref().child('users/${DateTime.now().microsecondsSinceEpoch}');
   final uploadTask=photoRef.putFile(File(thumbnailImageLocalPath!));
   final snapshot= await uploadTask.whenComplete(() => const Text('Upload Sucessfully'));
   return snapshot.ref.getDownloadURL();

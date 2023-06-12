@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,7 +18,10 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 String? thumbnailImageLocalPath;
+late UserProvider userProvider;
+late UserModel userModel;
 
+  String genderGroupValue="Male";
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
@@ -91,7 +96,26 @@ String? thumbnailImageLocalPath;
               style: TextStyle(color: Colors.black54),
             ),  title: const Text('Gender'),
             trailing: IconButton(
-              onPressed: () {},
+              onPressed: () {
+              showDialog(context: context, builder: (context) {
+                return   SimpleDialog(
+                  children: [
+                    SimpleDialogOption(
+                      onPressed: () {
+                        userProvider.updateUserField("$userFieldGender", 'Male');
+Navigator.pop(context);
+                      },
+                    child: Text('Male')
+                ), SimpleDialogOption(
+                      onPressed: () {
+                        userProvider.updateUserField("$userFieldGender", 'Female');
+                        Navigator.pop(context);
+                      },
+                        child: Text('Female')
+
+                    )]);
+              },);
+              },
               icon: const Icon(
                 Icons.edit,
                 color: Colors.tealAccent,
@@ -183,10 +207,10 @@ elevation: 0,
             children: [
               Padding(
                 padding: const EdgeInsets.all(8),
-                child: Card(
+                child: Card(elevation: 0,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50)),
-                    child: userProvider.userModel!.imageUrl == null
+                    child: userProvider.userModel!.imageUrl == null&&thumbnailImageLocalPath==null
                         ? Stack(clipBehavior: Clip.none,
                           children: [
                             ClipOval(
@@ -198,30 +222,42 @@ elevation: 0,
                       ),
                     ),
                             Positioned(right: -10,bottom: -7,
-                                child: FloatingActionButton.small(onPressed: ()async{
-_getImage(ImageSource.gallery);
-String? downloadUrl;
-downloadUrl =
-    await userProvider.uploadImage(thumbnailImageLocalPath!);
-userProvider.updateUserField('$userFieldimageURl', downloadUrl);
+                                child: FloatingActionButton.small(onPressed: (){
+                                  getImage(ImageSource.gallery);
+
+
                                 }, backgroundColor: Colors.cyanAccent,
                                     child: Icon(Icons.edit,size: 27,color: Colors.white,)))
                           ],
                         )
-                        : ClipOval(
-                      child: CachedNetworkImage(
-                        filterQuality: FilterQuality.none,
-                        height: 100,
-                        width: 100,
-                        fit: BoxFit.cover,
-                        imageUrl: userProvider.userModel!
-                            .imageUrl!,
-                        placeholder: (context, url) =>
-                        const Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                      ),
-                    )),
+                        : userProvider.userModel!.imageUrl == null? Stack(clipBehavior: Clip.none,
+                          children: [
+                            ClipOval(
+                      child:Image.file(File(thumbnailImageLocalPath!),
+                            height: 130,
+                            width: 130,fit: BoxFit.cover,
+                      )
+                    ),
+                            userProvider.userModel!.imageUrl == null?  Positioned(right: -10,bottom: -7,
+                              child: FloatingActionButton.small(child: Icon(Icons.done,size: 27,color: Colors.white,),backgroundColor: Colors.cyanAccent,
+                           onPressed: ()async{
+                         final downloadurl =
+                               await userProvider.uploadImage(thumbnailImageLocalPath!);
+                         userProvider.updateUserField('$userFieldimageURl', downloadurl);
+                       }),
+                            ):Text('')   ],
+                        ):ClipOval(
+                          child: CachedNetworkImage(fit: BoxFit.cover,
+                      height: 130,
+                      width: 130,
+                      imageUrl: userProvider.userModel!.imageUrl ?? '',
+                      placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) =>
+                      const Icon(Icons.error),
+                    ),
+                        ),
+                ),
               ),
               SizedBox(height: 5,),
               Column(
@@ -255,15 +291,20 @@ userProvider.updateUserField('$userFieldimageURl', downloadUrl);
     );
   }
 
-  void _getImage(ImageSource imageSource) async {
-    final pickedImage = await ImagePicker().pickImage(
-      source: imageSource,
-      imageQuality: 70,
-    );
-    if (pickedImage != null) {
-      setState(() {
-        thumbnailImageLocalPath = pickedImage.path;
-      });
-    }
+
+void getImage(ImageSource imageSource) async {
+  final pickedImage = await ImagePicker().pickImage(
+    source: imageSource,
+    imageQuality: 70,
+  );
+  if (pickedImage != null) {
+    setState(() {
+      thumbnailImageLocalPath = pickedImage.path;
+
+    });
+    
+
+
   }
+}
 }

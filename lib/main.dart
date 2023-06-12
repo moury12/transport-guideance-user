@@ -15,8 +15,9 @@ import 'package:transport_guidance_user/pages/qusen_ans_page.dart';
 import 'package:transport_guidance_user/pages/register_page_users.dart';
 import 'package:transport_guidance_user/pages/request_page.dart';
 import 'package:transport_guidance_user/pages/routes_page.dart';
-import 'package:transport_guidance_user/pages/settings_page.dart';
+import 'package:transport_guidance_user/pages/buslist_page.dart';
 import 'package:transport_guidance_user/pages/tickets_page.dart';
+import 'package:transport_guidance_user/providers/busProvider.dart';
 import 'package:transport_guidance_user/providers/userProvider.dart';
 
 import 'pages/dashboard_page.dart';
@@ -25,7 +26,10 @@ import 'pages/profile_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MultiProvider(providers: [ChangeNotifierProvider(create: (context)=>UserProvider())],
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context)=>UserProvider()),
+    ChangeNotifierProvider(create: (context)=>BusProvider()),
+  ],
       child: const MyApp()));
 }
 
@@ -56,7 +60,7 @@ class MyApp extends StatelessWidget {
       RegisterPage.routeName:(_)=>const RegisterPage(),
       RequestPage.routeName:(_)=>const RequestPage(),
       RoutePage.routeName:(_)=>const RoutePage(),
-      SettingsPage.routeName:(_)=>const SettingsPage(),
+      BusListPage.routeName:(_)=>const BusListPage(),
       TicketPage.routeName:(_)=>const TicketPage(),
       QusenAnsPage.routeName:(_)=>const QusenAnsPage(),
     }

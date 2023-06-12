@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/pages/notification.dart';
 import 'package:transport_guidance_user/pages/profile_page.dart';
 import 'package:transport_guidance_user/pages/routes_page.dart';
+import 'package:transport_guidance_user/providers/busProvider.dart';
 
 import '../providers/userProvider.dart';
 import 'home_page.dart';
@@ -20,6 +21,8 @@ class _DashboardPageState extends State<DashboardPage> {
 @override
   void didChangeDependencies() {
   Provider.of<UserProvider>(context, listen: false).getUserInfo();
+  Provider.of<BusProvider>(context, listen: false).getAllBus();
+  Provider.of<BusProvider>(context, listen: false).getAllSchedule();
     super.didChangeDependencies();
   }
   @override
