@@ -35,11 +35,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(appBar:  AppBar(title:Row(
-        children: [userProvider.userModel!.imageUrl!=null ?ClipOval(
+        children: [userProvider.userModel?.imageUrl!=null ?ClipOval(
           child: CachedNetworkImage(fit: BoxFit.cover,
             height: 30,
             width: 30,
-            imageUrl: userProvider.userModel!.imageUrl ?? '',
+            imageUrl: userProvider.userModel?.imageUrl ?? '',
             placeholder: (context, url) =>
             const Center(child: CircularProgressIndicator()),
             errorWidget: (context, url, error) =>

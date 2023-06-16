@@ -20,4 +20,23 @@ class dbhelper{
       db.collection(collectionBus).snapshots();
   static Stream<QuerySnapshot<Map<String,dynamic>>>getAllSchedule()=>
       db.collection(collectionSchedule).snapshots();
+
+
+
+  static Stream<QuerySnapshot<Map<String,dynamic>>>getBusListbyFrom(String? city)=>
+      db.collection(collectionSchedule).where('$scheduleFieldfrom' ,isEqualTo: city).snapshots();
+
+
+
+
+
+
+  static Stream<QuerySnapshot<Map<String,dynamic>>> getBusListbyroute(String? city,
+      String? city1, String startTime) =>
+      db.collection(collectionSchedule).where('$scheduleFieldfrom' ,isEqualTo: city ).
+      where('$scheduleFielddestination' ,isEqualTo: city1)
+
+      //.where('$scheduleFieldstartTime', isEqualTo: startTime)
+          .snapshots();
+
 }

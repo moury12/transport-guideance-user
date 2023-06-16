@@ -21,4 +21,20 @@ class BusProvider extends ChangeNotifier{
       notifyListeners();
     });
   }
+
+  void getBusListbyFrom(String? city,String city1) {
+    dbhelper.getBusListbyFrom(city).listen((snapshot) {
+      scheduleList=List.generate(snapshot.docs.length, (index) =>
+          ScheduleModel.fromMap(snapshot.docs[index].data()));
+      notifyListeners();
+    });
+  }
+
+  void getBusListbyroute(String? city, String? city1, String startTime) {
+    dbhelper.getBusListbyroute(city,city1,startTime).listen((snapshot){
+      scheduleList= List.generate(snapshot.docs.length ,(index)=>
+          ScheduleModel.fromMap(snapshot.docs[index].data())
+      );
+    });
+  }
 }
