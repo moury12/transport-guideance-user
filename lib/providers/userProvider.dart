@@ -30,4 +30,6 @@ Future<String> uploadImage(String? thumbnailImageLocalPath)async {
   final snapshot= await uploadTask.whenComplete(() => const Text('Upload Sucessfully'));
   return snapshot.ref.getDownloadURL();
 }
+
+Future<bool> doesUserExist(String uid) => dbhelper.doesUserExist(uid);
 }

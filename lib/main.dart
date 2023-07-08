@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/pages/alternativePath_page.dart';
+import 'package:transport_guidance_user/pages/busDetails.dart';
 import 'package:transport_guidance_user/pages/feedback_page.dart';
 import 'package:transport_guidance_user/pages/launcher_page.dart';
 import 'package:transport_guidance_user/pages/liveLocation_page.dart';
@@ -17,6 +18,7 @@ import 'package:transport_guidance_user/pages/request_page.dart';
 import 'package:transport_guidance_user/pages/routes_page.dart';
 import 'package:transport_guidance_user/pages/buslist_page.dart';
 import 'package:transport_guidance_user/pages/tickets_page.dart';
+import 'package:transport_guidance_user/providers/adminProvider.dart';
 import 'package:transport_guidance_user/providers/busProvider.dart';
 import 'package:transport_guidance_user/providers/userProvider.dart';
 
@@ -28,7 +30,9 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context)=>UserProvider()),
+    ChangeNotifierProvider(create: (context)=>AdminPtovider()),
     ChangeNotifierProvider(create: (context)=>BusProvider()),
+
   ],
       child: const MyApp()));
 }
@@ -50,7 +54,7 @@ class MyApp extends StatelessWidget {
     routes: {
       LauncherPage.routeName:(_)=>const LauncherPage(),
       DashboardPage.routeName:(_)=>const DashboardPage(),
-      AlternativePage.routeName:(_)=>const AlternativePage(),
+      AlternativePage.routeName:(_)=> AlternativePage(),
       FeedbackPage.routeName:(_)=>const FeedbackPage(),
       LiveLocationPage.routeName:(_)=>const LiveLocationPage(),
       LoginPage.routeName:(_)=> LoginPage(),
@@ -63,6 +67,7 @@ class MyApp extends StatelessWidget {
       BusListPage.routeName:(_)=>const BusListPage(),
       TicketPage.routeName:(_)=>const TicketPage(),
       QusenAnsPage.routeName:(_)=>const QusenAnsPage(),
+      BusDetails.routeName:(_)=>const BusDetails(),
     }
     );
   }

@@ -1,10 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:transport_guidance_user/models/admin_model.dart';
+import 'package:transport_guidance_user/models/reqModel.dart';
 import 'package:transport_guidance_user/models/schedule_model.dart';
 import 'package:transport_guidance_user/models/userModel.dart';
 
 import '../models/busModel.dart';
 
 class dbhelper{
+  static Future<bool> doesUserExist(String uid) async {
+    final snapshot = await db.collection(collectionUser).doc(uid).get();
+    return snapshot.exists;
+  }
   static final db =FirebaseFirestore.instance;
   static Future<void> addUser(UserModel userModel) {
     return db.collection(collectionUser).doc(userModel.userId).set(userModel.toMap());
@@ -23,9 +29,8 @@ class dbhelper{
 
 
 
-  static Stream<QuerySnapshot<Map<String,dynamic>>>getBusListbyFrom(String? city)=>
-      db.collection(collectionSchedule).where('$scheduleFieldfrom' ,isEqualTo: city).snapshots();
-
+  static Stream<QuerySnapshot<Map<String,dynamic>>> getAdminInfo() =>
+      db.collection(collectionAdmin).snapshots();
 
 
 
@@ -35,8 +40,12 @@ class dbhelper{
       String? city1, String startTime) =>
       db.collection(collectionSchedule).where('$scheduleFieldfrom' ,isEqualTo: city ).
       where('$scheduleFielddestination' ,isEqualTo: city1)
-
-      //.where('$scheduleFieldstartTime', isEqualTo: startTime)
+          .where('$scheduleFieldstartTime', isEqualTo: startTime)
           .snapshots();
+  static Future<void>addRequestBus(RequestModel requestBus) {
+    return db.collection(collectionRequest).doc(requestBus.startTime).set(requestBus.toMap());
+
+  }
+
 
 }

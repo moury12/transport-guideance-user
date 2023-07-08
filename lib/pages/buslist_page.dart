@@ -12,11 +12,6 @@ class BusListPage extends StatelessWidget {
         Text('Bus List',style: TextStyle(fontSize: 18),),
       ],
     ),toolbarHeight: 40, elevation:0,backgroundColor: Colors.transparent,foregroundColor: Colors.black54,centerTitle: true,),
-    body: Consumer<BusProvider>(
-      builder: (context, provider, child) {
-        return Expanded(child: Column());
-      },
-    ),
     );
   }
 }

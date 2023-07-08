@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 showMsg(BuildContext context, String msg) =>
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(margin: EdgeInsets.all(5),
-      content: Text(msg),backgroundColor: Colors.tealAccent.shade200,
+      content: Text(msg),backgroundColor: Colors.blue.shade200.withOpacity(0.5),
       behavior: SnackBarBehavior.floating,));
 showSingleTextInputDialog({
       required BuildContext context,

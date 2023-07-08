@@ -1,7 +1,13 @@
+
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 
 import '../authservice/authentication.dart';
+import '../models/userModel.dart';
+import '../providers/userProvider.dart';
 import 'launcher_page.dart';
 import 'register_page_users.dart';
 
@@ -21,6 +27,13 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   String errorMsg = '';
+  late UserProvider userProvider;
+
+  @override
+  void didChangeDependencies() {
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                InkWell(onTap:(){},
+                InkWell(onTap:_signInWithGoogle,
                   child: Container(
                     height: 40,
                     width: 150,
@@ -236,5 +249,38 @@ class _LoginPageState extends State<LoginPage> {
     _passwordController.dispose();
 
     super.dispose();
+  }
+
+  void _signInWithGoogle() async {
+    if(AuthService.currentUser!=null){
+      final idToken = await AuthService.currentUser!.getIdToken();
+      final credential = GoogleAuthProvider.credential(idToken: idToken);
+    }
+    else{
+      try{
+        final credential = await AuthService.signInWithGoogle();
+        final userExist = await userProvider.doesUserExist(credential.user!.uid);
+        if (!userExist) {
+          EasyLoading.show(status: 'redirecting...');
+          final userModel = UserModel(
+              userId: credential.user!.uid,
+              email: credential.user!.email!,
+              name: credential.user!.displayName!,
+              imageUrl: credential.user!.photoURL,
+              phone: credential.user!.phoneNumber== null? '':
+              credential.user!.phoneNumber!, isUser:true);
+          await userProvider.addUser(userModel);
+          EasyLoading.dismiss();
+
+        }
+        if(mounted){
+          Navigator.pushReplacementNamed(context, LauncherPage.routeName);
+        }
+      }   catch(error){
+        EasyLoading.dismiss();
+        rethrow;
+      }
+    }
+
   }
 }

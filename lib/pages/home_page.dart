@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/pages/alternativePath_page.dart';
+import 'package:transport_guidance_user/pages/busDetails.dart';
 import 'package:transport_guidance_user/pages/feedback_page.dart';
 import 'package:transport_guidance_user/pages/liveLocation_page.dart';
 import 'package:transport_guidance_user/pages/notice_page.dart';
@@ -9,6 +10,7 @@ import 'package:transport_guidance_user/pages/qusen_ans_page.dart';
 import 'package:transport_guidance_user/pages/request_page.dart';
 import 'package:transport_guidance_user/pages/buslist_page.dart';
 import 'package:transport_guidance_user/pages/tickets_page.dart';
+import 'package:transport_guidance_user/providers/adminProvider.dart';
 import 'package:transport_guidance_user/providers/busProvider.dart';
 import 'package:transport_guidance_user/providers/userProvider.dart';
 
@@ -26,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void didChangeDependencies() {
     Provider.of<UserProvider>(context, listen: false).getUserInfo();
+    Provider.of<AdminPtovider>(context, listen: false).getAdminInfo();
     Provider.of<BusProvider>(context, listen: false).getAllBus();
     Provider.of<BusProvider>(context, listen: false).getAllSchedule();
     super.didChangeDependencies();
@@ -266,30 +269,36 @@ class _HomePageState extends State<HomePage> {
 
                 return Padding(
                   padding: const EdgeInsets.all(2.0),
-                  child: Card(
-                    child: Column(mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/b.jpg', height: 150, width: double.infinity,),
-                        ListTile(
-                          title: Text(s.busModel.busName),
-                          subtitle: Text('${s.startTime}--${s.departureTime}'),
-                          trailing: Column(
-                            children: [
-                              Text(s.busModel.passengerCategory),
-                              Text('${s.busModel.facultyRent.toString()}BDT'),
+                  child: InkWell(
+                    onTap: ()=> Navigator.pushNamed(
+                        context,
+                        BusDetails.routeName,
+                        arguments:s ),
+                    child: Card(
+                      child: Column(mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/b.jpg', height: 150, width: double.infinity,),
+                          ListTile(
+                            title: Text(s.busModel.busName),
+                            subtitle: Text('${s.startTime}--${s.departureTime}'),
+                            trailing: Column(
+                              children: [
+                                Text(s.busModel.passengerCategory),
+                                Text('${s.busModel.facultyRent.toString()}BDT'),
 
+                              ],
+                            ),
+                          ),
+
+                          Row(mainAxisAlignment: MainAxisAlignment.center,
+                            children: [Icon(Icons.route, color: Colors.red,),
+                              Text('${s.from}<>${s.destination}'),
                             ],
                           ),
-                        ),
-
-                        Row(mainAxisAlignment: MainAxisAlignment.center,
-                          children: [Icon(Icons.route, color: Colors.red,),
-                            Text('${s.from}<>${s.destination}'),
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

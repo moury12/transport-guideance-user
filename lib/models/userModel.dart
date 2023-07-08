@@ -12,17 +12,20 @@ const String userFieldsemester= 'Semester';
 const String userFieldDesignation = 'Designation';
 const String userFieldisUser = 'isuser';
 const String userFieldimageURl = 'imageURl';
+const String userFieldtoken = 'user token';
+
 class UserModel {
   String userId;
   String? versityId;
   String? address;
   String? department;
   String name;
+  String? userToken;
   String email;
   String? gender;
   String? semester;
   String phone;
-  String designation;
+  String? designation;
   bool isUser;
   String? imageUrl;
 
@@ -31,7 +34,9 @@ class UserModel {
         required this.name,
         required this.email,
         required this.phone,
-        required this.designation,
+        this.designation,
+        this.userToken,
+
         required this.isUser,
         this.imageUrl,
         this.semester,
@@ -54,6 +59,7 @@ class UserModel {
       userFieldDesignation: designation,
       userFieldisUser: isUser,
       userFieldimageURl: imageUrl,
+      userFieldtoken: userToken,
     };
   }
 
@@ -69,5 +75,6 @@ class UserModel {
       department: map[userFieldDepartment],
       designation: map[userFieldDesignation],
       isUser: map[userFieldisUser],
+      userToken: map[userFieldtoken],
       imageUrl: map[userFieldimageURl]);
 }
