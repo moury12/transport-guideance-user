@@ -3,8 +3,10 @@ import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/models/reqModel.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../constant/utils.dart';
+import '../models/notification_model.dart';
 import '../providers/busProvider.dart';
 import 'dashboard_page.dart';
 
@@ -19,6 +21,7 @@ class RequestPage extends StatefulWidget {
 class _RequestPageState extends State<RequestPage> {
   String? city1;
   String? city;
+
   TextEditingController _textController = TextEditingController();
   String busTypeGroupValue = 'Regular Transport';
   String passengerTypeGroupValue = 'Student';
@@ -27,6 +30,7 @@ class _RequestPageState extends State<RequestPage> {
   @override
   void didChangeDependencies() {
     busprovider = Provider.of<BusProvider>(context, listen: false);
+    //requestModel = ModalRoute.of(context)!.settings.arguments as RequestModel;
     super.didChangeDependencies();
   }
   @override
@@ -365,14 +369,47 @@ class _RequestPageState extends State<RequestPage> {
         destination: city1!);
     try {
       await busprovider.addRequestBus(requestBus);
+      _notifyUser(requestBus);
       EasyLoading.dismiss();
       if (mounted) {
         showMsg(context, "Sent Request to the Admin");
+
+       // showMsg(context, 'Thanks for your feedback, your feedback is waiting for admin read');
+        final notificationModel =NotificationModel(id: DateTime.now().microsecondsSinceEpoch.toString(),
+            type: NotificationType.order,
+            message: 'User  request for a bus which is waiting for admin approval',orderModel:requestBus );
+        await Provider.of<BusProvider>(context,listen: false).addNotification(notificationModel);
+
         Navigator.pushReplacementNamed(context, DashboardPage.routeName);
       }
     } catch (error) {
       EasyLoading.dismiss();
       rethrow;
+    }
+  }
+  void _notifyUser(RequestModel requestBus) async {
+    final url = 'https://fcm.googleapis.com/fcm/send';
+    final header = {
+      'Content-Type': 'application/json',
+      'Authorization': 'key=$serverKey',
+    };
+    final body = {
+      "to": "/topics/feedback",
+      "notification": {
+        "title": "A New Schedule request for ${requestBus.startTime} ",
+        "body": "Please provide a bus on this ${requestBus.from}<>${requestBus.destination} route as soon as possible "
+      },
+      "data": {"key": "request", "value": requestBus.startTime}
+    };
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: header,
+        body: json.encode(body),
+      );
+
+    } catch (error) {
+      print(error.toString());
     }
   }
 }

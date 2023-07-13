@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:transport_guidance_user/database/database.dart';
+import 'package:transport_guidance_user/models/feedback_model.dart';
 import 'package:transport_guidance_user/models/reqModel.dart';
 
 import '../models/busModel.dart';
+import '../models/notification_model.dart';
 import '../models/schedule_model.dart';
 
 class BusProvider extends ChangeNotifier {
@@ -19,7 +21,13 @@ class BusProvider extends ChangeNotifier {
       notifyListeners();
     });
   }
+  Future<void> addComment(FeedbackModel commentModel) async {
 
+    return dbhelper.addComment(commentModel);
+  }
+  Future<void> addNotification(NotificationModel notificationModel) {
+    return dbhelper.addNotification(notificationModel);
+  }
   getAllSchedule() {
     dbhelper.getAllSchedule().listen((snapshot) {
       scheduleList = List.generate(snapshot.docs.length,

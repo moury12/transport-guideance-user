@@ -1,12 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:transport_guidance_user/models/admin_model.dart';
+import 'package:transport_guidance_user/models/feedback_model.dart';
 import 'package:transport_guidance_user/models/reqModel.dart';
 import 'package:transport_guidance_user/models/schedule_model.dart';
 import 'package:transport_guidance_user/models/userModel.dart';
 
 import '../models/busModel.dart';
+import '../models/notification_model.dart';
 
 class dbhelper{
+  static Future<void> addNotification(NotificationModel notificationModel) {
+    return db.collection(collectionNotification).doc(notificationModel.id).set(notificationModel.toMap());
+  }
   static Future<bool> doesUserExist(String uid) async {
     final snapshot = await db.collection(collectionUser).doc(uid).get();
     return snapshot.exists;
@@ -43,9 +48,16 @@ class dbhelper{
           .where('$scheduleFieldstartTime', isEqualTo: startTime)
           .snapshots();
   static Future<void>addRequestBus(RequestModel requestBus) {
-    return db.collection(collectionRequest).doc(requestBus.startTime).set(requestBus.toMap());
+    return db.collection(collectionRequest).doc(requestBus.reqId).set(requestBus.toMap());
 
   }
 
+  static Future<void> addComment(FeedbackModel commentmodel) async {
+    return db
+        .collection(collectionComment)
 
+
+        .doc(commentmodel.commentId)
+        .set(commentmodel.toMap());
+  }
 }

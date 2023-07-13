@@ -1,13 +1,14 @@
 
 const String collectionRequest = 'Request Service';
 const String reqFieldstartTime = 'startTime';
+const String reqFieldide = 'id';
 const String reqFieldfrom = 'from';
 const String reqFielddestination = 'destination';
 const String reqFieldroutes = 'title';
 const String reqFieldbusType = 'bus type';
 const String reqFieldpassenger = 'passenger type';
 class RequestModel{
-
+  String? reqId;
   String startTime;
   String from;
   String destination;
@@ -18,7 +19,7 @@ class RequestModel{
 
   RequestModel(
       {
-
+    this.reqId,
         required this.startTime,
 
         required  this.from,
@@ -28,7 +29,7 @@ class RequestModel{
        required this.passengertype});
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-
+reqFieldide:reqId,
       reqFieldstartTime: startTime,
 
       reqFieldfrom: from,
@@ -41,7 +42,7 @@ class RequestModel{
 
   factory RequestModel.fromMap(Map<String, dynamic> map) => RequestModel(
     startTime: map[reqFieldstartTime],
-
+reqId: map[reqFieldide],
     from: map[reqFieldfrom],
     destination: map[reqFielddestination],
     title: map[reqFieldroutes],
