@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/models/feedback_model.dart';
 import 'package:intl/intl.dart';
 import 'package:transport_guidance_user/models/userModel.dart';
+import 'package:transport_guidance_user/pages/dashboard_page.dart';
 import 'package:transport_guidance_user/providers/busProvider.dart';
-import '../authservice/authentication.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../constant/utils.dart';
 import '../models/notification_model.dart';
 import '../providers/userProvider.dart';
@@ -19,12 +21,12 @@ class FeedbackPage extends StatefulWidget {
 
 class _FeedbackPageState extends State<FeedbackPage> {
   final txtcontroller =TextEditingController();
-  late BusProvider productProvider;
+  late BusProvider busProvider;
   late UserModel userModel;
   final focusNode =FocusNode();
   @override
   void didChangeDependencies() {
-    productProvider = Provider.of<BusProvider>(context, listen: false);
+    busProvider = Provider.of<BusProvider>(context, listen: false);
 
 
     super.didChangeDependencies();
@@ -68,20 +70,46 @@ class _FeedbackPageState extends State<FeedbackPage> {
     comment: txtcontroller.text,
         date:getFormattedDate(DateTime.now(),pattern: 'dd/MM/yyyy')
     );
-    await productProvider.addComment(commentModel);
+    await busProvider.addComment(commentModel);
     EasyLoading.dismiss();
     focusNode.unfocus();
     txtcontroller.clear();
     showMsg(context, 'Thanks for your feedback, your feedback is waiting for admin read');
+    Navigator.pushNamed(context, DashboardPage.routeName);
     final notificationModel =NotificationModel(id: DateTime.now().microsecondsSinceEpoch.toString(),
-        type: NotificationType.comment,
-        message: 'User ${commentModel.userModel.name} has  post a feedback which is waiting for admin feedback',commentModel:commentModel );
+        type: NotificationType.comment,status: false,
+        message: 'User ${commentModel.userModel.name} has  post a feedback which is waiting for admin feedback',feedbackModel:commentModel );
     await Provider.of<BusProvider>(context,listen: false).addNotification(notificationModel);
+    _notifyUser(commentModel);
     }, child: Text('Submit'),style: ButtonStyle(foregroundColor: MaterialStatePropertyAll<Color>(Colors.pinkAccent)),)
     ]
     ),),);
   }
+  void _notifyUser(FeedbackModel feedbackModel) async {
+    final url = 'https://fcm.googleapis.com/fcm/send';
+    final header = {
+      'Content-Type': 'application/json',
+      'Authorization': 'key=$serverKey',
+    };
+    final body = {
+      "to": "/topics/feedback",
+      "notification": {
+        "title": "A New Feedback posted by ${feedbackModel.userModel.email} ",
+        "body": "${feedbackModel.comment}\n${feedbackModel.userModel.versityId??''} "
+      },
+      "data": {"key": "feed", "value": feedbackModel.date}
+    };
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: header,
+        body: json.encode(body),
+      );
 
+    } catch (error) {
+      print(error.toString());
+    }
+  }
   getFormattedDate(DateTime dt, {String pattern = 'dd/MM/yyyy'}) =>
       DateFormat(pattern).format(dt);
 }

@@ -1,242 +1,182 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/models/schedule_model.dart';
+import 'package:transport_guidance_user/models/ticket_model.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-import '../models/busModel.dart';
 import '../providers/busProvider.dart';
 
 class TicketPage extends StatefulWidget {
-  static const String routeName = '/tic';
-  const TicketPage({Key? key}) : super(key: key);
+  static const String routeName = '/tick';
+
+  final ScheduleModel schedule;
+
+  TicketPage({required this.schedule});
 
   @override
-  State<TicketPage> createState() => _TicketPageState();
+  _TicketPageState createState() => _TicketPageState();
 }
 
 class _TicketPageState extends State<TicketPage> {
-  late ScheduleModel scheduleModel;
-  late BusProvider busprovider;
-  BusModel? busModel;
-  @override
-  void didChangeDependencies() {
-    busprovider = Provider.of<BusProvider>(context, listen: false);
+  Set<int> selectedSeats = {};
+  List<int> bookedSeats = [];
+  late BusProvider busProvider;
 
+  void selectSeat(int seatIndex) {
+    setState(() {
+      if (selectedSeats.contains(seatIndex)) {
+        selectedSeats.remove(seatIndex);
+      } else {
+        selectedSeats.add(seatIndex);
+      }
+    });
+  }
+
+  void didChangeDependencies() {
+    busProvider = Provider.of<BusProvider>(context, listen: false);
     super.didChangeDependencies();
+  }
+
+  void bookTickets() {
+    List<TicketModel> ticketsToBook = [];
+
+    for (int seatIndex in selectedSeats) {
+      int seatNumber = seatIndex + 1;
+
+      // Check if the seat is already booked
+      bool isSeatAlreadyBooked = bookedSeats.contains(seatNumber);
+
+      if (!isSeatAlreadyBooked) {
+        ticketsToBook.add(
+          TicketModel(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            scheduleModel: widget.schedule,
+            seatNumber: seatNumber,
+            isBooked: true,
+          ),
+        );
+      }
+    }
+
+    if (ticketsToBook.isNotEmpty) {
+      // Perform the booking operation for the valid tickets
+      for (var ticket in ticketsToBook) {
+        busProvider.addTickets(ticket);
+      }
+
+      // Perform any additional actions or navigate to the next screen
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('No Seats Selected'),
+            content: Text('Please select at least one available seat.'),
+            actions: [
+              ElevatedButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          foregroundColor: Colors.black54,
-          title: Row(
-            children: [
-              Image.asset(
-                'assets/logo2.png',
-                height: 70,
-                width: 70,
-              ),
-              Center(
-                  child: Text('Book Tickets',
-                      style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15))),
-            ],
+      appBar: AppBar(
+        title: Text('Seat Selection'),
+      ),
+      body: FutureBuilder<List<TicketModel>>(
+        future: busProvider.getallTickets(widget.schedule.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Failed to load tickets'));
+          } else if (snapshot.hasData) {
+            final tickets = snapshot.data!;
+            bookedSeats = tickets.map((ticket) => ticket.seatNumber).toList();
+            return buildSeatSelectionUI();
+          } else {
+            return Center(child: Text('No data available'));
+          }
+        },
+      ),
+    );
+  }
+
+  Widget buildSeatSelectionUI() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Schedule: ${widget.schedule.from}',
+            style: TextStyle(fontSize: 20),
           ),
-          backgroundColor: Colors.white,
-          elevation: 0,
-        ),
-        body: ListView(children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Consumer<BusProvider>(
-                builder: (context, provider, child) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: DropdownButtonFormField<BusModel>(
-                      hint: const Text('Select Bus'),
-                      value: busModel,
-                      isExpanded: true,
-                      validator: (value) {
-                        if (value == null) {
-                          return 'please select a Bus';
-                        }
-                        return null;
-                      },
-                      items: provider.busList
-                          .map((busModel) => DropdownMenuItem(
-                          value: busModel, child: Text(busModel.busName)))
-                          .toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          busModel = value;
-                        });
-                      }),
-                ),
-              ),
-            ),
-Row(mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Icon(Icons.square_rounded,color: Colors.pinkAccent,),
-    ),Text('Booked',style: TextStyle(color: Colors.black54,fontSize: 10),),
-    SizedBox(width: 70,),Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,),
-    ),Text('Available',style: TextStyle(color: Colors.black54,fontSize: 10),)
-  ],
-),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center,
-children: [
-  Text('A'),
-  SizedBox(width: 70,),
-
-  Text('B'),
-  SizedBox(width: 100,),
-  Text('C'),
-  SizedBox(width: 70,),
-
-  Text('D'),
-],
-
-),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center,
-children: [
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-  SizedBox(width: 30,),
-
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 58,),
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-
-  SizedBox(width: 30,),
-
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.pinkAccent,size: 50,),onPressed: (){},),
-
-],
-
-),
-            ),Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center,
-children: [
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 30,),
-
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 58,),
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.pinkAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 30,),
-
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-],
-
-),
-            ),Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center,
-children: [
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-  SizedBox(width: 30,),
-
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 58,),
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 30,),
-
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-],
-
-),
-            ),Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center,
-children: [
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-  SizedBox(width: 30,),
-
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 58,),
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 30,),
-
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-],
-
-),
-            ),Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center,
-children: [
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-  SizedBox(width: 30,),
-
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 58,),
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 30,),
-
-  IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-],
-
-),
-            ),Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center,
-children: [
-    IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-  SizedBox(width: 13,),
-
-    IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-  SizedBox(width: 13,),
-    IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-  SizedBox(width: 13,),
-
-    IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-  SizedBox(width: 13,),
-
-    IconButton(icon: Icon(Icons.square_rounded,color: Colors.lightBlueAccent,size: 50,),onPressed: (){},),
-
-],
-
-
-),
-            ),
-ListTile(
-  title: Row(children: [
-    IconButton(onPressed: (){}, icon: Icon(Icons.add)),
-    Text('2',style: TextStyle(color: Colors.black54,fontSize: 10),),
-    IconButton(onPressed: (){}, icon: Icon(Icons.remove)),
-
-  ],),
-  trailing: FloatingActionButton.extended(backgroundColor: Colors.cyanAccent,
-    onPressed: (){}, label:     Text('Book and Pay',style: TextStyle(color: Colors.white,fontSize: 10),),
-  ),
-)
-           ]
+          SizedBox(height: 20),
+          Text(
+            'Select a Seat',
+            style: TextStyle(fontSize: 20),
           ),
-        );
+          SizedBox(height: 20),
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+              ),
+              itemCount: 20,
+              itemBuilder: (BuildContext context, int index) {
+                bool isSeatSelected = selectedSeats.contains(index);
+                bool isSeatBooked = bookedSeats.contains(index + 1);
+                return IconButton(
+                  icon: Icon(
+                    Icons.weekend,
+                    color: isSeatSelected ? Colors.red : (isSeatBooked ? Colors.grey : Colors.green),
+                  ),
+                  onPressed: () {
+                    selectSeat(index);
+                  },
+                );
+              },
+            ),
+          ),
+          ElevatedButton(
+            child: Text('Book Seat'),
+            onPressed: () {
+              bool hasSelectedSeat = selectedSeats.isNotEmpty;
+              if (hasSelectedSeat) {
+                bookTickets();
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('No Seats Selected'),
+                      content: Text('Please select at least one seat.'),
+                      actions: [
+                        ElevatedButton(
+                          child: Text('OK'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

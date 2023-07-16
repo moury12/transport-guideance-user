@@ -3,7 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:transport_guidance_user/database/database.dart';
 import 'package:transport_guidance_user/models/feedback_model.dart';
+import 'package:transport_guidance_user/models/notice_model.dart';
+import 'package:transport_guidance_user/models/notification_model_user.dart';
 import 'package:transport_guidance_user/models/reqModel.dart';
+import 'package:transport_guidance_user/models/ticket_model.dart';
 
 import '../models/busModel.dart';
 import '../models/notification_model.dart';
@@ -13,6 +16,13 @@ class BusProvider extends ChangeNotifier {
   List<BusModel> busList = [];
   List<ScheduleModel> scheduleList = [];
   List<ScheduleModel> filterScheduleList = [];
+  List<NoticeModel> notice = [];
+  List<TicketModel> tickets=[];
+  List<NotificationUSerModel> notuser = [];
+  Future<RequestModel> getProductById(String id) async {
+    final snapshot = await dbhelper.getreqById(id);
+    return RequestModel.fromMap(snapshot.data()!);
+  }
   getAllBus() {
     dbhelper.getAllBus().listen((snapshot) {
       busList = List.generate(snapshot.docs.length,
@@ -38,7 +48,24 @@ class BusProvider extends ChangeNotifier {
   }
 
 
+  getAllNotification(){
+    dbhelper.getAllNotification().listen((snapshot) {
+      notuser=List.generate(snapshot.docs.length, (index) => NotificationUSerModel.fromMap(snapshot.docs[index].data()));
 
+      notifyListeners();
+    });
+  }
+  getAllNotice(){
+    dbhelper.getAllNotice().listen((snapshot) {
+      notice=List.generate(snapshot.docs.length, (index) => NoticeModel.fromMap(snapshot.docs[index].data()));
+
+      notifyListeners();
+    });
+  }
+  Future<List<TicketModel>> getallTickets(String? id)async{
+    final snapshot = await dbhelper.getallTicketsbySchedule(id!);
+    return List.generate(snapshot.docs.length, (index) => TicketModel.fromMap(snapshot.docs[index].data()));
+  }
   void getBusListbyroute(
       String? city, String? city1, TimeOfDay? startTime, BuildContext context) {
     log(" city: ${city}---- ${startTime}");
@@ -66,5 +93,17 @@ class BusProvider extends ChangeNotifier {
   Future<void> addRequestBus(RequestModel requestBus) {
     return dbhelper.addRequestBus(requestBus);
   }
+  Future<void> deleteRequestById(String? reqId) async{
+    await dbhelper.deleteRequestById(reqId);
+  }
+  Future<void> deletenotificationUserById(String? id) async{
+    await dbhelper.deletenotificationUserById(id);
+  }
+  Future<void> updateNotificationStatus(String notId, bool status)async {
+    dbhelper.updateNotificationStatus(notId,status);
+  }
 
+  Future<void> addTickets(TicketModel ticket) async{
+    await dbhelper.addTickets(ticket);
+  }
 }

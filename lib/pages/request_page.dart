@@ -360,7 +360,7 @@ class _RequestPageState extends State<RequestPage> {
     }
     EasyLoading.show(status: 'Please wait');
     final requestBus = RequestModel(
-
+reqId:DateTime.now().millisecondsSinceEpoch.toString(),
         startTime: startTime.format(context).toString(),
         bustype:busTypeGroupValue,
         passengertype: passengerTypeGroupValue,
@@ -375,9 +375,10 @@ class _RequestPageState extends State<RequestPage> {
         showMsg(context, "Sent Request to the Admin");
 
        // showMsg(context, 'Thanks for your feedback, your feedback is waiting for admin read');
-        final notificationModel =NotificationModel(id: DateTime.now().microsecondsSinceEpoch.toString(),
+        final notificationModel =NotificationModel(
+            id: DateTime.now().microsecondsSinceEpoch.toString(),status:false ,
             type: NotificationType.order,
-            message: 'User  request for a bus which is waiting for admin approval',orderModel:requestBus );
+            message: 'User  request for a bus which is waiting for admin approval',reqModel:requestBus );
         await Provider.of<BusProvider>(context,listen: false).addNotification(notificationModel);
 
         Navigator.pushReplacementNamed(context, DashboardPage.routeName);
@@ -394,7 +395,7 @@ class _RequestPageState extends State<RequestPage> {
       'Authorization': 'key=$serverKey',
     };
     final body = {
-      "to": "/topics/feedback",
+      "to": "/topics/req",
       "notification": {
         "title": "A New Schedule request for ${requestBus.startTime} ",
         "body": "Please provide a bus on this ${requestBus.from}<>${requestBus.destination} route as soon as possible "

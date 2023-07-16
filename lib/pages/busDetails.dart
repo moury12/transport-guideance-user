@@ -125,7 +125,8 @@ scheduleModel =  ModalRoute.of(context)!.settings.arguments as ScheduleModel;
               ],
 
             ),SizedBox(height: 20,),
-            FloatingActionButton.extended(onPressed: ()=>Navigator.pushNamed(context, TicketPage.routeName,arguments: scheduleModel.busModel),
+            FloatingActionButton.extended(onPressed: ()=>
+                Navigator.push(context, MaterialPageRoute(builder: (context) => TicketPage(schedule:  scheduleModel),)),
             label:Text('Book a Ticket',style: TextStyle(color: Colors.white,fontSize: 10)),backgroundColor: Colors.cyanAccent,)
            , Padding(
              padding: const EdgeInsets.all(8.0),

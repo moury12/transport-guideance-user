@@ -33,13 +33,13 @@ class QusenAnsPage extends StatelessWidget {
         builder: (context, provider, child) => ListView.builder(
           itemBuilder:(context, index) {
             final user = provider.userList[index];
-            return ListTile(onTap:()=> Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(),)),
+            return ListTile(onTap:()=> Navigator.pushNamed(context, ChatScreen.routeName, arguments: user),
               leading: ClipRRect(
 
                     borderRadius: BorderRadius.circular(180),
 
 
-                child:Icon(Icons.admin_panel_settings, color: Colors.pinkAccent,size: 20,)
+                child:Icon(Icons.account_circle, color: Colors.tealAccent,size: 50,)
               ),
               title: Text(
                   user.name??'No  Name'

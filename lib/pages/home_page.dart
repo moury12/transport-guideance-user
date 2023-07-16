@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:transport_guidance_user/models/schedule_model.dart';
 import 'package:transport_guidance_user/pages/alternativePath_page.dart';
 import 'package:transport_guidance_user/pages/busDetails.dart';
 import 'package:transport_guidance_user/pages/feedback_page.dart';
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage> {
     Provider.of<BusProvider>(context, listen: false).getAllSchedule();
     super.didChangeDependencies();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +189,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(width: 20,), InkWell(onTap: () {
-                      Navigator.pushNamed(context, TicketPage.routeName);
                     },
                       child: Card(
                         child: Column(children: [

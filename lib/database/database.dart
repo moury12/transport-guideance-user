@@ -1,14 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:transport_guidance_user/models/admin_model.dart';
 import 'package:transport_guidance_user/models/feedback_model.dart';
+import 'package:transport_guidance_user/models/notice_model.dart';
+import 'package:transport_guidance_user/models/notification_model_user.dart';
 import 'package:transport_guidance_user/models/reqModel.dart';
 import 'package:transport_guidance_user/models/schedule_model.dart';
+import 'package:transport_guidance_user/models/ticket_model.dart';
 import 'package:transport_guidance_user/models/userModel.dart';
 
 import '../models/busModel.dart';
 import '../models/notification_model.dart';
 
 class dbhelper{
+  static Future<DocumentSnapshot<Map<String, dynamic>>> getreqById(String id) =>
+      db.collection(collectionRequest).doc(id).get();
   static Future<void> addNotification(NotificationModel notificationModel) {
     return db.collection(collectionNotification).doc(notificationModel.id).set(notificationModel.toMap());
   }
@@ -60,4 +65,32 @@ class dbhelper{
         .doc(commentmodel.commentId)
         .set(commentmodel.toMap());
   }
+  static Future<void> deleteRequestById(String? reqId) =>db.collection(collectionRequest).doc(reqId).delete();
+  static Stream<QuerySnapshot<Map<String,dynamic>>>getAllNotification()=>
+      db.collection(collectionNotificationUser).snapshots();
+  static Stream<QuerySnapshot<Map<String,dynamic>>>getAllNotice()=>
+      db.collection(collectionNotice).snapshots();
+  static Future<void> deletenotificationUserById(String? reqId) =>db.collection(collectionNotificationUser).doc(reqId).delete();
+
+
+  static Future <void> updateNotificationStatus(String notId, bool status) {
+    return db.collection(collectionNotification).doc(notId).update({notificationFieldStatus: status});
+  }
+  static Future<void>addTickets(TicketModel ticket) {
+    return db.collection(collectionSchedule).doc(ticket.scheduleModel.id)
+        .collection(collectionticket).doc(ticket.id).set(ticket.toMap());
+
+  }
+
+  static Future<QuerySnapshot<Map<String, dynamic>>> getallTicketsbySchedule(
+      String id) {
+    return db
+        .collection(collectionSchedule)
+        .doc(id)
+        .collection(collectionticket)
+
+        .get();
+  }
+
+
 }

@@ -1,11 +1,13 @@
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/pages/alternativePath_page.dart';
 import 'package:transport_guidance_user/pages/busDetails.dart';
+import 'package:transport_guidance_user/pages/chatScreen.dart';
 import 'package:transport_guidance_user/pages/feedback_page.dart';
 import 'package:transport_guidance_user/pages/launcher_page.dart';
 import 'package:transport_guidance_user/pages/liveLocation_page.dart';
@@ -24,10 +26,23 @@ import 'package:transport_guidance_user/providers/userProvider.dart';
 
 import 'pages/dashboard_page.dart';
 import 'pages/profile_page.dart';
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+
+  print("Handling a background message: ${message.data}");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  await FirebaseMessaging.instance.subscribeToTopic('accept');
+  await FirebaseMessaging.instance.subscribeToTopic('deny');
+  await FirebaseMessaging.instance.subscribeToTopic('noticed');
+  print('FCM TOKEN $fcmToken');
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context)=>UserProvider()),
     ChangeNotifierProvider(create: (context)=>AdminPtovider()),
@@ -45,7 +60,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Transport Guideance',
+        title: 'DIUBus',
         theme: ThemeData(
           textTheme: GoogleFonts.prataTextTheme(),
           primarySwatch: Colors.blueGrey,
@@ -53,6 +68,7 @@ class MyApp extends StatelessWidget {
     initialRoute: LauncherPage.routeName,
     routes: {
       LauncherPage.routeName:(_)=>const LauncherPage(),
+
       DashboardPage.routeName:(_)=>const DashboardPage(),
       AlternativePage.routeName:(_)=> AlternativePage(),
       FeedbackPage.routeName:(_)=>const FeedbackPage(),
@@ -65,7 +81,7 @@ class MyApp extends StatelessWidget {
       RequestPage.routeName:(_)=>const RequestPage(),
       RoutePage.routeName:(_)=>const RoutePage(),
       BusListPage.routeName:(_)=>const BusListPage(),
-      TicketPage.routeName:(_)=>const TicketPage(),
+     // TicketPage.routeName:(_)=> TicketPage(schedule: null,),
       QusenAnsPage.routeName:(_)=>const QusenAnsPage(),
       BusDetails.routeName:(_)=>const BusDetails(),
     }

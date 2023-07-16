@@ -1,6 +1,9 @@
 
-import 'package:transpor_guidance_admin/models/notice_model.dart';
-import 'package:transpor_guidance_admin/models/reqModel.dart';
+
+
+import 'package:transport_guidance_user/models/reqModel.dart';
+
+import 'notice_model.dart';
 
 const String collectionNotificationUser = 'Notifications User';
 

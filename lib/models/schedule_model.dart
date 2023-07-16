@@ -1,5 +1,6 @@
 
 import 'package:transport_guidance_user/models/busModel.dart';
+import 'package:transport_guidance_user/models/ticket_model.dart';
 
 import 'driver_model.dart';
 const String collectionSchedule = 'Schedule';
@@ -12,30 +13,34 @@ const String scheduleFielddestination = 'destination';
 const String scheduleFieldroutes = 'routes';
 const String scheduleFieldsemester = 'semester';
 const String scheduleFielddriverModel = 'driver';
-class ScheduleModel{
+class ScheduleModel {
   BusModel busModel;
-String startTime;
-String? id;
-String departureTime;
-String from;
-String destination;
-String? routes;
-String? semester;
-DriverModel? driverModel;
+  String startTime;
+  String? id;
+  String departureTime;
+  String from;
+  String destination;
+  String? routes;
+  String? semester;
+  DriverModel? driverModel;
+  bool isBooked;
+  List<TicketModel> tickets;
 
-ScheduleModel(
-      {required this.busModel,
-        this.id,
-        required this.startTime,
-     required this.departureTime,
-    required  this.from,
-    required  this.destination,
-      this.routes,
-      this.semester,
-      this.driverModel});
+  ScheduleModel({required this.busModel,
+    this.id,
+    required this.startTime,
+    required this.departureTime,
+    required this.from,
+    required this.destination,
+    this.isBooked = false,
+    this.tickets = const [],
+    this.routes,
+    this.semester,
+    this.driverModel});
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      scheduleFieldid:id,
+      scheduleFieldid: id,
       scheduleFieldbusModel: busModel.toMap(),
       scheduleFieldstartTime: startTime,
       scheduleFielddepartureTime: departureTime,
@@ -47,16 +52,28 @@ ScheduleModel(
     };
   }
 
-  factory ScheduleModel.fromMap(Map<String, dynamic> map) => ScheduleModel(
-    busModel: BusModel.fromMap(map[scheduleFieldbusModel]),
-    startTime: map[scheduleFieldstartTime],
-    id: map[scheduleFieldid],
-    departureTime: map[scheduleFielddepartureTime],
-    from: map[scheduleFieldfrom],
-    destination: map[scheduleFielddestination],
-    routes: map[scheduleFieldroutes],
-    semester: map[scheduleFieldsemester],
-    driverModel: map[scheduleFielddriverModel]==null?null
-        :DriverModel.fromMap(map[scheduleFielddriverModel]),
-  );
+  factory ScheduleModel.fromMap(Map<String, dynamic> map) =>
+
+      ScheduleModel(
+        busModel: BusModel.fromMap(map[scheduleFieldbusModel]),
+        startTime: map[scheduleFieldstartTime],
+        id: map[scheduleFieldid],
+        departureTime: map[scheduleFielddepartureTime],
+        from: map[scheduleFieldfrom],
+        destination: map[scheduleFielddestination],
+        routes: map[scheduleFieldroutes],
+        semester: map[scheduleFieldsemester],
+        // tickets: List<TicketModel>.from((map['tickets'] as List<dynamic>).map(
+        //       (ticket) => TicketModel.fromMap(ticket),
+        // )),
+        driverModel: map[scheduleFielddriverModel] == null
+            ? null
+            : DriverModel.fromMap(map[scheduleFielddriverModel]),
+      );
+
+  void setBookedStatus(bool status) {
+    isBooked = status;
+  }
+
+
 }

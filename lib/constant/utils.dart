@@ -60,6 +60,11 @@ const subDistricts=[
       'Narayanganj',
       'Nobinogor Savar'
 ];
+abstract class NotificationuserType {
+      static const String Notice = 'New Notice';
+      static const String request = 'Accept Request';
+      static const String deny = 'Deny Request';
+}
 abstract class NotificationType {
       static const String comment = 'New Feedback';
       static const String order = 'New Request';

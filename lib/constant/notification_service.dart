@@ -7,7 +7,7 @@ class NotificationService{
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()!.requestPermission();
     AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('ic_notifications');
+    AndroidInitializationSettings('app_icon');
     final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,);
     flutterLocalNotificationsPlugin.initialize(initializationSettings,);
@@ -22,7 +22,7 @@ class NotificationService{
     const NotificationDetails notificationDetails =
     NotificationDetails(android: androidNotificationDetails);
     await flutterLocalNotificationsPlugin.show(
-        0, message.notification!.title, message.notification!.body, notificationDetails,
+        0, '<b>${message.notification!.title}</b>', message.notification!.body, notificationDetails,
         payload: 'item x');
   }
 }
