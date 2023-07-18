@@ -1,17 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:transport_guidance_user/models/schedule_model.dart';
 import 'package:transport_guidance_user/pages/alternativePath_page.dart';
 import 'package:transport_guidance_user/pages/busDetails.dart';
 import 'package:transport_guidance_user/pages/feedback_page.dart';
-import 'package:transport_guidance_user/pages/liveLocation_page.dart';
+import 'package:transport_guidance_user/pages/tickets_page.dart';
 import 'package:transport_guidance_user/pages/notice_page.dart';
 import 'package:transport_guidance_user/pages/qusen_ans_page.dart';
 import 'package:transport_guidance_user/pages/request_page.dart';
-import 'package:transport_guidance_user/pages/buslist_page.dart';
-import 'package:transport_guidance_user/pages/tickets_page.dart';
-import 'package:transport_guidance_user/providers/adminProvider.dart';
 import 'package:transport_guidance_user/providers/busProvider.dart';
 import 'package:transport_guidance_user/providers/userProvider.dart';
 
@@ -26,14 +22,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  void didChangeDependencies() {
-    Provider.of<UserProvider>(context, listen: false).getUserInfo();
-    Provider.of<AdminPtovider>(context, listen: false).getAdminInfo();
-    Provider.of<BusProvider>(context, listen: false).getAllBus();
-    Provider.of<BusProvider>(context, listen: false).getAllSchedule();
-    super.didChangeDependencies();
-  }
+
 
 
   @override
@@ -114,28 +103,8 @@ class _HomePageState extends State<HomePage> {
                         ],),
                       ),
                     ),
-                    SizedBox(width: 20,), InkWell(onTap: () {
-                      Navigator.pushNamed(context, LiveLocationPage.routeName);
-                    },
-                      child: Card(
-                        child: Column(children: [
-                          Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: Image.asset(
-                              'assets/i3.png', height: 40, width: 40,),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: Text('Live Location', style: TextStyle(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 7)),
-                          ),
-
-                        ],),
-                      ),
-                    ),
-                    SizedBox(width: 20,), InkWell(onTap: () {
+                    SizedBox(width: 20,),
+                    InkWell(onTap: () {
                       Navigator.pushNamed(context, NoticePage.routeName);
                     },
                       child: Card(
@@ -189,6 +158,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(width: 20,), InkWell(onTap: () {
+                      Navigator.pushNamed(context, TicketsPage.routeName);
+
                     },
                       child: Card(
                         child: Column(children: [
@@ -209,28 +180,7 @@ class _HomePageState extends State<HomePage> {
                         ],),
                       ),
                     ),
-                    SizedBox(width: 20,), InkWell(onTap: () {
-                      Navigator.pushNamed(context, BusListPage.routeName);
-                    },
-                      child: Card(
-                        child: Column(children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 7, right: 7, top: 2),
-                            child: Image.asset(
-                              'assets/i7.png', height: 40, width: 40,),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: Text('Bus List', style: TextStyle(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 7)),
-                          ),
 
-                        ],),
-                      ),
-                    ),
                     SizedBox(width: 20,), InkWell(onTap: () {
                       Navigator.pushNamed(context, QusenAnsPage.routeName);
                     },
@@ -287,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                             trailing: Column(
                               children: [
                                 Text(s.busModel.passengerCategory),
-                                Text('${s.busModel.facultyRent.toString()}BDT'),
+                                Text('${s.busModel.studentRent.toString()}BDT'),
 
                               ],
                             ),

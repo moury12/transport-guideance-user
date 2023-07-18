@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:transport_guidance_user/models/schedule_model.dart';
-import 'package:transport_guidance_user/pages/tickets_page.dart';
+import 'package:transport_guidance_user/pages/seat_booking_page.dart';
 
 class BusDetails extends StatefulWidget {
   static const String routeName ='/busd';
@@ -126,26 +126,26 @@ scheduleModel =  ModalRoute.of(context)!.settings.arguments as ScheduleModel;
 
             ),SizedBox(height: 20,),
             FloatingActionButton.extended(onPressed: ()=>
-                Navigator.push(context, MaterialPageRoute(builder: (context) => TicketPage(schedule:  scheduleModel),)),
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SeatBookingPage(schedule:  scheduleModel),)),
             label:Text('Book a Ticket',style: TextStyle(color: Colors.white,fontSize: 10)),backgroundColor: Colors.cyanAccent,)
            , Padding(
              padding: const EdgeInsets.all(8.0),
-             child: Text('Routes',style: TextStyle(color: Colors.black,fontSize: 10),textAlign: TextAlign.left,),
+             child: Text('Routes',style: TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.bold),textAlign: TextAlign.left,),
            ),
-            Image.asset('assets/r3.jpg',height: 250,width:double.infinity,),
+            Image.network(scheduleModel.routes??'',height: 200,width:double.infinity,),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('Assigned Driver',style: TextStyle(color: Colors.black,fontSize: 10),textAlign: TextAlign.left,),
+              child: Text('Assigned Driver',style: TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.bold),textAlign: TextAlign.left,),
             ),
             scheduleModel.driverModel!=null?
                 ListTile(
                  leading: ClipRRect(borderRadius: BorderRadius.circular(180),
                      child: Image.network(scheduleModel.driverModel!.driverLicenseImage??'',height: 50,width: 50, fit: BoxFit.cover,)),
-                  title: Text(scheduleModel.driverModel!.name??'',style: TextStyle(color: Colors.black,fontSize: 10),textAlign: TextAlign.left,),
+                  title: Text(scheduleModel.driverModel!.name??'',style: TextStyle(color: Colors.lightBlue,fontSize: 10,fontWeight: FontWeight.bold),textAlign: TextAlign.left,),
                   trailing:
 
-                      Text(scheduleModel.driverModel!.phone.toString()??'',style: TextStyle(color: Colors.black54,fontSize: 10),textAlign: TextAlign.left,),
-                    
+                      Text(scheduleModel.driverModel!.phone.toString()??'',style: TextStyle(color: Colors.black54,fontSize: 12),textAlign: TextAlign.left,),
+                    subtitle: Text('${scheduleModel.driverModel!.email}',style: TextStyle(color: Colors.black54,fontSize: 10),),
                 ):Container()
           ],
         ),

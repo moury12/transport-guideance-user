@@ -7,7 +7,9 @@ import 'package:transport_guidance_user/models/notice_model.dart';
 import 'package:transport_guidance_user/models/notification_model_user.dart';
 import 'package:transport_guidance_user/models/reqModel.dart';
 import 'package:transport_guidance_user/models/ticket_model.dart';
+import 'package:transport_guidance_user/models/user_ticket_model.dart';
 
+import '../authservice/authentication.dart';
 import '../models/busModel.dart';
 import '../models/notification_model.dart';
 import '../models/schedule_model.dart';
@@ -18,6 +20,8 @@ class BusProvider extends ChangeNotifier {
   List<ScheduleModel> filterScheduleList = [];
   List<NoticeModel> notice = [];
   List<TicketModel> tickets=[];
+  List<TicketUserModel> usersTicket=[];
+  List<TicketItem> ticketitem=[];
   List<NotificationUSerModel> notuser = [];
   Future<RequestModel> getProductById(String id) async {
     final snapshot = await dbhelper.getreqById(id);
@@ -62,10 +66,7 @@ class BusProvider extends ChangeNotifier {
       notifyListeners();
     });
   }
-  Future<List<TicketModel>> getallTickets(String? id)async{
-    final snapshot = await dbhelper.getallTicketsbySchedule(id!);
-    return List.generate(snapshot.docs.length, (index) => TicketModel.fromMap(snapshot.docs[index].data()));
-  }
+
   void getBusListbyroute(
       String? city, String? city1, TimeOfDay? startTime, BuildContext context) {
     log(" city: ${city}---- ${startTime}");
@@ -102,8 +103,24 @@ class BusProvider extends ChangeNotifier {
   Future<void> updateNotificationStatus(String notId, bool status)async {
     dbhelper.updateNotificationStatus(notId,status);
   }
+  Future<List<TicketModel>> getallTickets(String? id)async{
+    final snapshot = await dbhelper.getallTicketsbySchedule(id!);
 
+    return List.generate(snapshot.docs.length, (index) => TicketModel.fromMap(snapshot.docs[index].data()));
+  }
   Future<void> addTickets(TicketModel ticket) async{
     await dbhelper.addTickets(ticket);
+  }
+
+  Future<void> addUserTicket(TicketUserModel userTicket) async{
+return dbhelper.addUserTicket(userTicket);
+  }
+  getAllticketByUser() {
+    dbhelper.getAllticketByUser(AuthService.currentUser!.uid).listen((snapshot) {
+      usersTicket = List.generate(snapshot.docs.length,
+              (index) => TicketUserModel.fromMap(snapshot.docs[index].data()));
+      ticketitem=usersTicket.map((order) => TicketItem(ticketUserModel: order)).toList();
+      notifyListeners();
+    });
   }
 }

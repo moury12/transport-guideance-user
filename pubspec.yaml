@@ -53,6 +53,8 @@ dependencies:
   firebase_messaging:
   http:
   firebase_database:
+  qr_flutter: ^4.0.0
+  qr:
   curved_navigation_bar: ^1.0.3
 
 dev_dependencies:

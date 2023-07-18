@@ -33,7 +33,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(foregroundColor: Colors.black54,
         title: Row(
           children: [
             Image.asset(

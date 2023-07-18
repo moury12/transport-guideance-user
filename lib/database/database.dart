@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:transport_guidance_user/models/admin_model.dart';
 import 'package:transport_guidance_user/models/feedback_model.dart';
 import 'package:transport_guidance_user/models/notice_model.dart';
@@ -7,6 +8,7 @@ import 'package:transport_guidance_user/models/reqModel.dart';
 import 'package:transport_guidance_user/models/schedule_model.dart';
 import 'package:transport_guidance_user/models/ticket_model.dart';
 import 'package:transport_guidance_user/models/userModel.dart';
+import 'package:transport_guidance_user/models/user_ticket_model.dart';
 
 import '../models/busModel.dart';
 import '../models/notification_model.dart';
@@ -77,6 +79,7 @@ class dbhelper{
     return db.collection(collectionNotification).doc(notId).update({notificationFieldStatus: status});
   }
   static Future<void>addTickets(TicketModel ticket) {
+
     return db.collection(collectionSchedule).doc(ticket.scheduleModel.id)
         .collection(collectionticket).doc(ticket.id).set(ticket.toMap());
 
@@ -92,5 +95,12 @@ class dbhelper{
         .get();
   }
 
+
+  static Future<void> addUserTicket(TicketUserModel userTicket) async{
+    return db.collection(collectionUserticket).doc(userTicket.id).set(userTicket.toMap());
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllticketByUser(String uid) =>
+      db.collection(collectionUserticket).where(ticketUserFielduserId, isEqualTo: uid).snapshots();
 
 }

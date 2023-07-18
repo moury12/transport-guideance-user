@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: Colors.transparent,
+                        color: Colors.white70,
                         border: Border.all(color: Colors.white, width: 1)),
                   ),
                 ),
@@ -203,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: Colors.transparent,
+                        color: Colors.white70,
                         border: Border.all(color: Colors.white, width: 1)),
                   ),
                 )

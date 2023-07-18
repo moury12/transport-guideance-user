@@ -27,6 +27,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Provider.of<BusProvider>(context, listen: false).getAllNotification();
   Provider.of<BusProvider>(context, listen: false).getAllNotice();
   Provider.of<BusProvider>(context, listen: false).getAllSchedule();
+  Provider.of<BusProvider>(context, listen: false).getAllticketByUser();
     super.didChangeDependencies();
   }
   void initState() {

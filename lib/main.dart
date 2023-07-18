@@ -10,7 +10,7 @@ import 'package:transport_guidance_user/pages/busDetails.dart';
 import 'package:transport_guidance_user/pages/chatScreen.dart';
 import 'package:transport_guidance_user/pages/feedback_page.dart';
 import 'package:transport_guidance_user/pages/launcher_page.dart';
-import 'package:transport_guidance_user/pages/liveLocation_page.dart';
+import 'package:transport_guidance_user/pages/tickets_page.dart';
 import 'package:transport_guidance_user/pages/login_pages.dart';
 import 'package:transport_guidance_user/pages/notice_page.dart';
 import 'package:transport_guidance_user/pages/notification.dart';
@@ -18,8 +18,6 @@ import 'package:transport_guidance_user/pages/qusen_ans_page.dart';
 import 'package:transport_guidance_user/pages/register_page_users.dart';
 import 'package:transport_guidance_user/pages/request_page.dart';
 import 'package:transport_guidance_user/pages/routes_page.dart';
-import 'package:transport_guidance_user/pages/buslist_page.dart';
-import 'package:transport_guidance_user/pages/tickets_page.dart';
 import 'package:transport_guidance_user/providers/adminProvider.dart';
 import 'package:transport_guidance_user/providers/busProvider.dart';
 import 'package:transport_guidance_user/providers/userProvider.dart';
@@ -72,7 +70,7 @@ class MyApp extends StatelessWidget {
       DashboardPage.routeName:(_)=>const DashboardPage(),
       AlternativePage.routeName:(_)=> AlternativePage(),
       FeedbackPage.routeName:(_)=>const FeedbackPage(),
-      LiveLocationPage.routeName:(_)=>const LiveLocationPage(),
+      TicketsPage.routeName:(_)=>const TicketsPage(),
       LoginPage.routeName:(_)=> LoginPage(),
       NoticePage.routeName:(_)=>const NoticePage(),
       NotificationPage.routeName:(_)=>const NotificationPage(),
@@ -80,8 +78,6 @@ class MyApp extends StatelessWidget {
       RegisterPage.routeName:(_)=>const RegisterPage(),
       RequestPage.routeName:(_)=>const RequestPage(),
       RoutePage.routeName:(_)=>const RoutePage(),
-      BusListPage.routeName:(_)=>const BusListPage(),
-     // TicketPage.routeName:(_)=> TicketPage(schedule: null,),
       QusenAnsPage.routeName:(_)=>const QusenAnsPage(),
       BusDetails.routeName:(_)=>const BusDetails(),
     }
