@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/pages/notification.dart';
 import 'package:transport_guidance_user/pages/profile_page.dart';
 import 'package:transport_guidance_user/pages/routes_page.dart';
+import 'package:transport_guidance_user/providers/adminProvider.dart';
 import 'package:transport_guidance_user/providers/busProvider.dart';
 
 import '../constant/notification_service.dart';
@@ -27,6 +28,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Provider.of<BusProvider>(context, listen: false).getAllNotification();
   Provider.of<BusProvider>(context, listen: false).getAllNotice();
   Provider.of<BusProvider>(context, listen: false).getAllSchedule();
+  Provider.of<AdminPtovider>(context, listen: false).getAdminInfo();
   Provider.of<BusProvider>(context, listen: false).getAllticketByUser();
     super.didChangeDependencies();
   }

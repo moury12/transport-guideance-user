@@ -1,17 +1,19 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 const String collectionMessage = 'Messages';
-const String messageFielduserIDFrom = 'startTime';
-const String messageFielduserIDto = 'from';
-const String messageFieldtimestamp = 'destination';
-const String messageFieldContent = 'bus type';
-const String messageFieldtype = 'passenger type';
+const String messageFielduserIDFrom = 'sender';
+const String messageFielduserIDto = 'receiver';
+const String messageFieldtimestamp = 'timestamp';
+const String messageFieldContent = 'content';
+
 class MessageModel{
 
   String idFrom;
   String idTo;
-  String timeStamp;
+  DateTime timeStamp;
   String content;
-  int type;
+
 
 
   MessageModel(
@@ -22,16 +24,16 @@ class MessageModel{
         required  this.idTo,
         required  this.timeStamp,
         required this.content,
-        required this.type});
+        });
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
 
       messageFielduserIDFrom: idFrom,
 
       messageFielduserIDto: idTo,
-      messageFieldtimestamp: timeStamp,
+      messageFieldtimestamp: Timestamp.fromDate(timeStamp),
       messageFieldContent: content,
-      messageFieldtype: type,
+
     };
   }
 
@@ -39,8 +41,7 @@ class MessageModel{
     idFrom: map[messageFielduserIDFrom],
 
     idTo: map[messageFielduserIDto],
-    timeStamp: map[messageFieldtimestamp],
+    timeStamp: (map[messageFieldtimestamp]as Timestamp).toDate(),
     content: map[messageFieldContent],
-    type: map[messageFieldtype],
   );
 }

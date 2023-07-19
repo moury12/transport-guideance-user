@@ -75,11 +75,11 @@ class MyApp extends StatelessWidget {
       NoticePage.routeName:(_)=>const NoticePage(),
       NotificationPage.routeName:(_)=>const NotificationPage(),
       ProfilePage.routeName:(_)=>const ProfilePage(),
-      RegisterPage.routeName:(_)=>const RegisterPage(),
-      RequestPage.routeName:(_)=>const RequestPage(),
-      RoutePage.routeName:(_)=>const RoutePage(),
-      QusenAnsPage.routeName:(_)=>const QusenAnsPage(),
-      BusDetails.routeName:(_)=>const BusDetails(),
+      RegisterPage.routeName:(_)=> RegisterPage(),
+      RequestPage.routeName:(_)=> RequestPage(),
+      RoutePage.routeName:(_)=> RoutePage(),
+      QusenAnsPage.routeName:(_)=> QusenAnsPage(),
+      BusDetails.routeName:(_)=> BusDetails(),
     }
     );
   }

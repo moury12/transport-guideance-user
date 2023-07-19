@@ -1,14 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:transport_guidance_user/models/admin_model.dart';
 import 'package:transport_guidance_user/pages/chatScreen.dart';
 import 'package:transport_guidance_user/providers/adminProvider.dart';
+
+import '../providers/userProvider.dart';
 class QusenAnsPage extends StatelessWidget {
   static const String routeName ='/qa';
-  const QusenAnsPage({Key? key}) : super(key: key);
+   QusenAnsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(appBar: AppBar(
       foregroundColor: Colors.black54,
       title: Row(
@@ -33,7 +38,9 @@ class QusenAnsPage extends StatelessWidget {
         builder: (context, provider, child) => ListView.builder(
           itemBuilder:(context, index) {
             final user = provider.userList[index];
-            return ListTile(onTap:()=> Navigator.pushNamed(context, ChatScreen.routeName, arguments: user),
+            return ListTile(onTap:()=>
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(admin:  user,user:userProvider.userModel! ),)),
+
               leading: ClipRRect(
 
                     borderRadius: BorderRadius.circular(180),
@@ -45,7 +52,13 @@ class QusenAnsPage extends StatelessWidget {
                   user.name??'No  Name'
               ),
               subtitle: Text(user.email),
-              trailing: Text(user.phone??''),
+              trailing: IconButton(
+                onPressed: (){
+                  //Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(admin:  adminProvider.adminModel!,user:user ),));
+                },
+                icon:Icon(Icons.textsms,color: Colors.greenAccent.shade200,) ,
+              )
+              ,
             );
           },
           itemCount:provider.userList.length ,
