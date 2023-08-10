@@ -1,6 +1,10 @@
 # transport_guidance_user
-The user and driver
-need to log in if they are new user otherwise they have to log in with email and password
+![InShot_20230801_081645345](https://github.com/moury12/transport-guideance-user/assets/107296533/9aa212c2-f1e9-4c7d-8a58-24538f083ab3)
+![InShot_20230801_082038401](https://github.com/moury12/transport-guideance-user/assets/107296533/214d4117-e2e3-4680-935e-fe00752fff44)
+![InShot_20230801_083424791](https://github.com/moury12/transport-guideance-user/assets/107296533/1b3deae6-9839-47b8-948a-3eb7af9ac695)
+![InShot_20230801_085345945](https://github.com/moury12/transport-guideance-user/assets/107296533/0207fbaf-e268-4eb6-a075-fa566bd0f5e1)
+
+The user and driver need to log in if they are new user otherwise they have to log in with email and password
 user portion have a Google sign-in option they can log in without registration with a
 university email. drive have to provide their driver's license picture and nid card pictures
 during registration. admin After login the dashboard will bring up. they are many features
@@ -22,7 +26,5 @@ bus or laguna and also provides cost information. Students can request bus servi
 will work forthe assigned bus. and share the location of the bus so that students can track
 the bus and catch a bus by nearest location. if there are any breakdowns of the bus or face
 any problem he will notify admin.
-![InShot_20230801_081645345](https://github.com/moury12/transport-guideance-user/assets/107296533/cf941aca-f996-41ec-8ec9-37fd7e57e595)
-
 
 
