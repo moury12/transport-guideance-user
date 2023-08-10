@@ -1,16 +1,28 @@
 # transport_guidance_user
+The user and driver
+need to log in if they are new user otherwise they have to log in with email and password
+user portion have a Google sign-in option they can log in without registration with a
+university email. drive have to provide their driver's license picture and nid card pictures
+during registration. admin After login the dashboard will bring up. they are many features
+for admin like admin can add bus information bus type passenger type and rent also provide
+available seat number of bus. Admin can create a schedule by selecting starting time and
+departure time, selecting drop-off location and pickup location, assigning a driver, and
+assigning a specific bus. after the assigned driver will notify and they go to the pickup
+location at a time. admin can also announce any notice and look after user's feedback.
+Answer any kind of queries of users. Users have a dashboard page where every features
+and schedule list gather. users have a profile option so that they can update their profile.
+admin has all information about users and drivers. Students can see schedule details and
+book tickets on specific schedules by selecting seats after confirming tickets it will notify
+an admin. Users can find routes by giving pickup and drop-off locations and the time
+system provides a schedule list of according time and pickup and drop-off location. Users
+can see notices and give feedback to the admin. Users can ask anything about the schedule
+and bus to the admin. if any students miss the university bus they can have another option
+alternative way. this feature suggests students another way to reach the university by local
+bus or laguna and also provides cost information. Students can request bus service. drivers
+will work forthe assigned bus. and share the location of the bus so that students can track
+the bus and catch a bus by nearest location. if there are any breakdowns of the bus or face
+any problem he will notify admin.
+![InShot_20230801_081645345](https://github.com/moury12/transport-guideance-user/assets/107296533/cf941aca-f996-41ec-8ec9-37fd7e57e595)
 
-A new Flutter project.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
