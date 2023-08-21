@@ -14,7 +14,8 @@ class NotificationService{
   }
   void sendNotifications(RemoteMessage message) async {
     const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails('channel01', 'description',
+    AndroidNotificationDetails('channel01',
+        'description',
         channelDescription: 'Test',
         importance: Importance.max,
         priority: Priority.high,
@@ -22,7 +23,7 @@ class NotificationService{
     const NotificationDetails notificationDetails =
     NotificationDetails(android: androidNotificationDetails);
     await flutterLocalNotificationsPlugin.show(
-        0, '<b>${message.notification!.title}</b>', message.notification!.body, notificationDetails,
+        0, '${message.notification!.title}', message.notification!.body, notificationDetails,
         payload: 'item x');
   }
 }

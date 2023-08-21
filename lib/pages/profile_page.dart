@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/models/userModel.dart';
@@ -26,12 +27,10 @@ late UserModel userModel;
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(appBar: AppBar(backgroundColor: Colors.white,foregroundColor: Colors.black54,elevation: 0,
-        title: Row(
-      children: [
-        Image.asset('assets/logo2.png',height: 50,width: 50,),
-        Text('User Profile',style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),)
-      ],
-    )),
+        title:
+        Text('User Profile',style:GoogleFonts.bentham(),),
+      centerTitle: true,
+    ),
     body: userProvider.userModel == null
         ? Center(child: Text('Failed to load user data'),):ListView(
       children: [
@@ -48,7 +47,7 @@ late UserModel userModel;
             subtitle: Text(
               userProvider.userModel!.phone ?? 'Not set yet',
               style: TextStyle(color:Colors.black54),
-            ),  title: const Text('Phone'),
+            ),  title:  Text('Phone',style:GoogleFonts.bentham()),
             trailing: IconButton(
               onPressed: () {
                 showSingleTextInputDialog(context: context, title: 'Phone', onSubmit:(value){
@@ -71,7 +70,7 @@ late UserModel userModel;
             subtitle: Text(
               userProvider.userModel!.versityId ?? 'Not set yet',
               style: TextStyle(color: Colors.black54),
-            ),  title: const Text('University Id'),
+            ),  title:  Text('University Id',style:GoogleFonts.bentham()),
             trailing: IconButton(
               onPressed: () {
                 showSingleTextInputDialog(context: context, title: 'University Id', onSubmit:(value){
@@ -94,7 +93,7 @@ late UserModel userModel;
             subtitle: Text(
               userProvider.userModel!.gender ?? 'Not set yet',
               style: TextStyle(color: Colors.black54),
-            ),  title: const Text('Gender'),
+            ),  title:  Text('Gender',style:GoogleFonts.bentham()),
             trailing: IconButton(
               onPressed: () {
               showDialog(context: context, builder: (context) {
@@ -129,7 +128,7 @@ elevation: 0,
             leading: const Icon(
               Icons.location_city,
               color: Colors.lightBlueAccent,
-            ),  title: const Text('Current Address'),
+            ),  title:  Text('Current Address',style:GoogleFonts.bentham()),
             subtitle: Text(
               userProvider.userModel!.address ?? 'Not set yet',
               style: TextStyle(color: Colors.black54),
@@ -152,7 +151,7 @@ elevation: 0,
             leading: const Icon(
               Icons.subject_outlined,
               color: Colors.lightBlueAccent,
-            ),  title: const Text('Department'),
+            ),  title:  Text('Department',style:GoogleFonts.bentham()),
            subtitle : Text(
               userProvider.userModel!.department ?? 'Not set yet',
               style: TextStyle(color: Colors.black54),
@@ -173,7 +172,7 @@ elevation: 0,
             leading: const Icon(
               Icons.class_outlined,
               color: Colors.lightBlueAccent,
-            ),  title: const Text('Semester'),
+            ),  title:  Text('Semester',style:GoogleFonts.bentham()),
             subtitle: Text(
               userProvider.userModel!.semester ?? 'Not set yet',
               style: TextStyle(color: Colors.black54),
@@ -268,7 +267,7 @@ elevation: 0,
                     children: [
                       Text(
                         userProvider.userModel!.name ?? 'No Display Name',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        style:GoogleFonts.bakbakOne(fontSize: 14),
                       ),userProvider.userModel!.name==null ?
                       IconButton(onPressed: (){
                         showSingleTextInputDialog(context: context, title: "User Name", onSubmit: (value){

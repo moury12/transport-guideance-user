@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/models/feedback_model.dart';
 import 'package:intl/intl.dart';
@@ -35,55 +37,123 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
 
-    return Scaffold(appBar: AppBar(backgroundColor: Colors.white,foregroundColor: Colors.black54,elevation: 0,
-        title: Row(
-          children: [
-            Image.asset('assets/logo2.png',height: 50,width: 50,),
-            Text('Feedback',style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),)
-          ],
-        )),
-    body: Card(elevation: 5,
-    child: Column(
-    children: [Image.asset(
-      'assets/i2.png', height: 142, width: 142,),
+    return
+    Stack(
+      children: [
 
-    Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Text('Post your Feedback ',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black54,fontSize: 14),),
-    ),
-    TextField(
-    maxLines: 3,
-    controller: txtcontroller,
-    decoration: InputDecoration(border: OutlineInputBorder()),
-    focusNode: focusNode,
-    ),
-    OutlinedButton(onPressed: () async{
-    if(txtcontroller.text.isEmpty){
-    showMsg(context, 'Please! provide a valid feedback');
-    return;
-    }
+        Card(elevation: 5,
+        child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(28.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [IconButton(onPressed: () {
+              Navigator.pushNamed(context, DashboardPage.routeName);
+            },
+               icon:             Icon(Icons.cancel_rounded,color: Colors.red.shade200,),
+            ),
+              IconButton(onPressed: () async{
+                if(txtcontroller.text.isEmpty){
+                  showMsg(context, 'Please! provide a valid feedback');
+                  return;
+                }
 
-    EasyLoading.show(status: 'please wait');
-    final commentModel= FeedbackModel(
-        commentId: DateTime.now().microsecondsSinceEpoch.toString(),
-        userModel: context.read<UserProvider>().userModel!,
-    comment: txtcontroller.text,
-        date:getFormattedDate(DateTime.now(),pattern: 'dd/MM/yyyy')
+                EasyLoading.show(status: 'please wait');
+                final commentModel= FeedbackModel(
+                    commentId: DateTime.now().microsecondsSinceEpoch.toString(),
+                    userModel: context.read<UserProvider>().userModel!,
+                    comment: txtcontroller.text,
+                    date:getFormattedDate(DateTime.now(),pattern: 'dd/MM/yyyy')
+                );
+                await busProvider.addComment(commentModel);
+                EasyLoading.dismiss();
+                focusNode.unfocus();
+                txtcontroller.clear();
+                showMsg(context, 'Thanks for your feedback, your feedback is waiting for admin read');
+                Navigator.pushNamed(context, DashboardPage.routeName);
+                final notificationModel =NotificationModel(id: DateTime.now().microsecondsSinceEpoch.toString(),
+                    type: NotificationType.comment,status: false,
+                    message: 'User ${commentModel.userModel.name} has  post a feedback which is waiting for admin feedback',feedbackModel:commentModel );
+                await Provider.of<BusProvider>(context,listen: false).addNotification(notificationModel);
+                _notifyUser(commentModel);
+              },                icon:             Icon(Icons.upload,color: Colors.red.shade200,),
+                  ),
+
+            ],
+        ),
+          )
+,
+          Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 38.0,right: 38.0,top: 38.0,bottom: 10),
+                child:
+        Card(clipBehavior: Clip.none,
+              color: Colors.white,
+                    elevation: 20,  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+style: GoogleFonts.actor(fontSize: 12),
+                        maxLines: 3,
+                        controller: txtcontroller,
+                        decoration: InputDecoration( hintText: 'Post your Feedback ',
+                            hintStyle: GoogleFonts.actor(fontSize: 12),
+                            focusedBorder:  OutlineInputBorder(
+                          borderSide: BorderSide(width: 0, color: Colors.transparent),),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 0, color: Colors.transparent),)),
+                        focusNode: focusNode,
+                      ),
+                    ),
+                  ),
+
+              ),
+              Positioned(
+                  bottom: 0,
+                  left: 88,
+                  child:Icon(Icons.circle,color: Colors.white,size: 35,)
+              ),
+            ],
+          ),
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(90),
+                child: CachedNetworkImage(fit: BoxFit.cover,
+                height: 130,
+                width: 130,
+                imageUrl: userProvider.userModel?.imageUrl ?? '',
+                placeholder: (context, url) =>
+                const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) =>
+                const Icon(Icons.account_circle),
+        ),
+              ),
+              Positioned(
+                  top: 6,
+                  left: 5,
+                  child:Icon(Icons.circle,color: Colors.white,size: 20,)
+              ),
+            ],
+          ),
+
+
+
+        ]
+        ),),
+        Positioned(bottom: 0,
+          left: 0,
+          right: 0,
+          child: TextButton.icon(onPressed: () {
+
+          },label: Text('Share with transport supervisor',style: GoogleFonts.actor(),),icon:Icon(Icons.account_circle,color: Colors.black54,size: 20,) ,),
+        )
+      ],
     );
-    await busProvider.addComment(commentModel);
-    EasyLoading.dismiss();
-    focusNode.unfocus();
-    txtcontroller.clear();
-    showMsg(context, 'Thanks for your feedback, your feedback is waiting for admin read');
-    Navigator.pushNamed(context, DashboardPage.routeName);
-    final notificationModel =NotificationModel(id: DateTime.now().microsecondsSinceEpoch.toString(),
-        type: NotificationType.comment,status: false,
-        message: 'User ${commentModel.userModel.name} has  post a feedback which is waiting for admin feedback',feedbackModel:commentModel );
-    await Provider.of<BusProvider>(context,listen: false).addNotification(notificationModel);
-    _notifyUser(commentModel);
-    }, child: Text('Submit'),style: ButtonStyle(foregroundColor: MaterialStatePropertyAll<Color>(Colors.pinkAccent)),)
-    ]
-    ),),);
   }
   void _notifyUser(FeedbackModel feedbackModel) async {
     final url = 'https://fcm.googleapis.com/fcm/send';

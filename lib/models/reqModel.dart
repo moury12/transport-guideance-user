@@ -8,7 +8,7 @@ const String reqFieldroutes = 'title';
 const String reqFieldbusType = 'bus type';
 const String reqFieldpassenger = 'passenger type';
 class RequestModel{
-  String? reqId;
+  String reqId;
   String startTime;
   String from;
   String destination;
@@ -19,7 +19,7 @@ class RequestModel{
 
   RequestModel(
       {
-    this.reqId,
+   required this.reqId,
         required this.startTime,
 
         required  this.from,

@@ -1,6 +1,8 @@
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +36,12 @@ class _LoginPageState extends State<LoginPage> {
     userProvider = Provider.of<UserProvider>(context, listen: false);
     super.didChangeDependencies();
   }
+@override
+  void initState() {
+  _saveUserFCMTokenToFirestore();
 
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,12 +70,12 @@ class _LoginPageState extends State<LoginPage> {
               right: 0,
               child: Center(
                   child: Text(
-                'LOGIN',
-                style: TextStyle(
-                    color: Colors.blueGrey,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20),
-              ))),
+                    'LOGIN',
+                    style: TextStyle(
+                        color: Colors.blueGrey,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20),
+                  ))),
           Positioned(
             top: 280,
             left: 20,
@@ -120,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 10,
                     ),
                     FloatingActionButton(
-                      onPressed:_authentication,
+                      onPressed: _authentication,
                       child: Icon(
                         Icons.arrow_forward_outlined,
                         size: 30,
@@ -138,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                InkWell(onTap:_signInWithGoogle,
+                InkWell(onTap: _signInWithGoogle,
                   child: Container(
                     height: 40,
                     width: 150,
@@ -159,8 +166,8 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                               color: Colors.black38,
                               fontWeight: FontWeight.w600,
-                                fontSize: 10.5,
-                                ),
+                              fontSize: 10.5,
+                            ),
                           )
                         ],
                       ),
@@ -174,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   width: 26,
                 ),
-                InkWell(onTap:(){},
+                InkWell(onTap: () {},
                   child: Container(
                     height: 40,
                     width: 165,
@@ -185,8 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                           Image.asset(
                             'assets/m.png',
                             height: 20,
-                            width: 20,
-                          ),
+                            width: 20,),
                           SizedBox(
                             width: 3,
                           ),
@@ -195,8 +201,8 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                               color: Colors.black38,
                               fontWeight: FontWeight.w600,
-                                fontSize: 10,
-                                ),
+                              fontSize: 10,
+                            ),
                           )
                         ],
                       ),
@@ -226,23 +232,24 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-  void _authentication() async{
-    if(_formKey.currentState!.validate()){
-      final email= _emailController.text;
-      final password =_passwordController.text;
-      try{
-        final satus =await AuthService.login(email, password);
-        if(mounted){
 
+  void _authentication() async {
+    if (_formKey.currentState!.validate()) {
+      final email = _emailController.text;
+      final password = _passwordController.text;
+      try {
+        final satus = await AuthService.login(email, password);
+        if (mounted) {
           Navigator.pushReplacementNamed(context, LauncherPage.routeName);
         }
-      }on FirebaseAuthException catch(error){
+      } on FirebaseAuthException catch (error) {
         setState(() {
-          errorMsg=error.message!;
+          errorMsg = error.message!;
         });
       }
     }
   }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -252,14 +259,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _signInWithGoogle() async {
-    if(AuthService.currentUser!=null){
+    if (AuthService.currentUser != null) {
       final idToken = await AuthService.currentUser!.getIdToken();
       final credential = GoogleAuthProvider.credential(idToken: idToken);
     }
-    else{
-      try{
+    else {
+      try {
         final credential = await AuthService.signInWithGoogle();
-        final userExist = await userProvider.doesUserExist(credential.user!.uid);
+        final userExist = await userProvider.doesUserExist(
+            credential.user!.uid);
         if (!userExist) {
           EasyLoading.show(status: 'redirecting...');
           final userModel = UserModel(
@@ -267,20 +275,34 @@ class _LoginPageState extends State<LoginPage> {
               email: credential.user!.email!,
               name: credential.user!.displayName!,
               imageUrl: credential.user!.photoURL,
-              phone: credential.user!.phoneNumber== null? '':
-              credential.user!.phoneNumber!, isUser:true);
+              phone: credential.user!.phoneNumber == null ? '' :
+              credential.user!.phoneNumber!,
+              isUser: true);
           await userProvider.addUser(userModel);
           EasyLoading.dismiss();
-
         }
-        if(mounted){
+        if (mounted) {
+          _saveUserFCMTokenToFirestore();
           Navigator.pushReplacementNamed(context, LauncherPage.routeName);
         }
-      }   catch(error){
+      } catch (error) {
         EasyLoading.dismiss();
         rethrow;
       }
     }
-
   }
+
+  void _saveUserFCMTokenToFirestore() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
+      final user = FirebaseAuth.instance.currentUser;
+      final userDocument = FirebaseFirestore.instance.collection(collectionUser).doc(user!.uid);
+
+      // Update the FCM token in the user document
+      userDocument.update({
+        userFieldtoken: fcmToken,
+      });
+    }
+    );}
 }
+

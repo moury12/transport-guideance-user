@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/models/reqModel.dart';
 import 'package:http/http.dart' as http;
@@ -36,24 +37,16 @@ class _RequestPageState extends State<RequestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            SizedBox(
-              width: 2,
-            ),
-            Text(
-              'Service Request',
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
-        toolbarHeight: 40,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black54,
-        centerTitle: true,
-      ),
+      appBar:  AppBar(
+
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black54,
+          elevation: 0,
+          title: Text(
+            'Request Form',
+            style:   GoogleFonts.bentham(),
+          )),
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -378,7 +371,7 @@ reqId:DateTime.now().millisecondsSinceEpoch.toString(),
         final notificationModel =NotificationModel(
             id: DateTime.now().microsecondsSinceEpoch.toString(),status:false ,
             type: NotificationType.order,
-            message: 'User  request for a bus which is waiting for admin approval',reqModel:requestBus );
+            message: 'User  request for a bus ${requestBus.from}<>${requestBus.destination} at ${requestBus.startTime}which is waiting for admin approval',reqModel:requestBus );
         await Provider.of<BusProvider>(context,listen: false).addNotification(notificationModel);
 
         Navigator.pushReplacementNamed(context, DashboardPage.routeName);

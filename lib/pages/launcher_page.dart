@@ -19,7 +19,12 @@ class LauncherPage extends StatelessWidget {
   });
     return Scaffold(body:
     Center(
-      child: CircularProgressIndicator(),
+      child:
+      Image.asset('assets/logo2.png',
+        height:150,width: 150,),
+
+
+
     ),
     );
   }

@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/pages/alternativePath_page.dart';
 import 'package:transport_guidance_user/pages/busDetails.dart';
-import 'package:transport_guidance_user/pages/chatScreen.dart';
 import 'package:transport_guidance_user/pages/feedback_page.dart';
 import 'package:transport_guidance_user/pages/launcher_page.dart';
 import 'package:transport_guidance_user/pages/tickets_page.dart';
@@ -39,11 +38,12 @@ void main() async {
   await FirebaseMessaging.instance.subscribeToTopic('accept');
   await FirebaseMessaging.instance.subscribeToTopic('deny');
   await FirebaseMessaging.instance.subscribeToTopic('noticed');
+  await FirebaseMessaging.instance.subscribeToTopic('FCM_TOKEN_OF_SPECIFIC_ADMIN');
   print('FCM TOKEN $fcmToken');
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context)=>UserProvider()),
-    ChangeNotifierProvider(create: (context)=>AdminPtovider()),
+    ChangeNotifierProvider(create: (context)=>AdminProvider()),
     ChangeNotifierProvider(create: (context)=>BusProvider()),
 
   ],

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/constant/utils.dart';
 import 'package:transport_guidance_user/models/notice_model.dart';
@@ -9,6 +10,7 @@ import 'package:transport_guidance_user/models/notification_model_user.dart';
 import 'package:transport_guidance_user/models/userModel.dart';
 import 'package:transport_guidance_user/pages/home_page.dart';
 import 'package:transport_guidance_user/pages/notice_page.dart';
+import 'package:transport_guidance_user/pages/qusen_ans_page.dart';
 
 import '../authservice/authentication.dart';
 import '../providers/busProvider.dart';
@@ -33,25 +35,20 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(foregroundColor: Colors.black54,
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/logo2.png',
-              height: 70,
-              width: 70,
-            ),
-            Center(
-                child: Text('Notifications ',
-                    style: TextStyle(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15))),
-          ],
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar:  AppBar(
+          leading: Image.asset(
+            'assets/logo2.png',
+            height: 40,
+            width: 40,
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black54,
+          elevation: 0,
+          title: Text(
+            'Notifications',
+            style:   GoogleFonts.bentham(),
+          )),
 body: Consumer<BusProvider>(
   builder: (context, provider, child) => ListView.builder(
     itemCount: provider.notuser.length,
@@ -61,7 +58,13 @@ body: Consumer<BusProvider>(
         child: Padding(
           padding: const EdgeInsets.all(2.0),
           child: ListTile(
-            leading: notification.type=='New Notice'?Icon(Icons.note_alt_rounded,color: Colors.lightBlue.shade200,):notification.type=='Accept Request'?Icon(Icons.mark_email_read,color: Colors.deepPurpleAccent.shade100,):Icon(Icons.error,color: Colors.teal.shade200,),
+            leading: notification.type=='New Notice'?
+            Icon(Icons.note_alt_rounded,color: Colors.lightBlue.shade200,)
+                :notification.type=='Accept Request'?
+            Icon(Icons.mark_email_read,color: Colors.deepPurpleAccent.shade100,)
+                :notification.type=='New Message'?
+            Icon(Icons.message_outlined,color:Colors.red.shade200)
+                :Icon(Icons.error,color: Colors.teal.shade200,),
             tileColor:
             notification.status ? null : Colors.white,
             onTap: () {
@@ -91,7 +94,7 @@ body: Consumer<BusProvider>(
       case NotificationuserType.request:
         id = notification.reqModel!.reqId;
         routeName =HomePage.routeName;
-        busprovider.deleteRequestById(id);
+       // busprovider.deleteRequestById(id);
         break;
       case NotificationuserType.Notice:
         id = notification.noticeModel!.noticeId;
@@ -99,10 +102,14 @@ routeName =NoticePage.routeName;
         //_showCustomDialog(context, id,notification.noticeModel);
 
         break;
+      case NotificationuserType.message:
+        id = notification.msgModel!.messageId;
+        routeName =QusenAnsPage.routeName;
+        break;
       case NotificationuserType.deny:
         id = notification.reqModel!.reqId;
-        busprovider.deleteRequestById(id);
-        busprovider.deletenotificationUserById(id);
+       // busprovider.deleteRequestById(id);
+       // busprovider.deletenotificationUserById(id);
         break;
     }
     provider.updateNotificationStatus(notification.id!, notification.status);
@@ -117,7 +124,7 @@ routeName =NoticePage.routeName;
           content: Column(
             children: [
               Text(noticeModel!.Noticetitle),
-              Text(noticeModel!.message,maxLines: 5,),
+              Text(noticeModel.message,maxLines: 5,),
             ],
           ),
           actions: [

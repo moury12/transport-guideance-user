@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transport_guidance_user/pages/notification.dart';
 import 'package:transport_guidance_user/pages/profile_page.dart';
+import 'package:transport_guidance_user/pages/qusen_ans_page.dart';
 import 'package:transport_guidance_user/pages/routes_page.dart';
 import 'package:transport_guidance_user/providers/adminProvider.dart';
 import 'package:transport_guidance_user/providers/busProvider.dart';
@@ -11,8 +12,9 @@ import 'package:transport_guidance_user/providers/busProvider.dart';
 import '../constant/notification_service.dart';
 import '../providers/userProvider.dart';
 import 'home_page.dart';
+
 class DashboardPage extends StatefulWidget {
-  static const String routeName ='/dash';
+  static const String routeName = '/dash';
   const DashboardPage({Key? key}) : super(key: key);
 
   @override
@@ -20,25 +22,23 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  int index=0;
-@override
+  int index = 0;
+  @override
   void didChangeDependencies() {
-  Provider.of<UserProvider>(context, listen: false).getUserInfo();
-  Provider.of<BusProvider>(context, listen: false).getAllBus();
-  Provider.of<BusProvider>(context, listen: false).getAllNotification();
-  Provider.of<BusProvider>(context, listen: false).getAllNotice();
-  Provider.of<BusProvider>(context, listen: false).getAllSchedule();
-  Provider.of<AdminPtovider>(context, listen: false).getAdminInfo();
-  Provider.of<BusProvider>(context, listen: false).getAllticketByUser();
+    Provider.of<UserProvider>(context, listen: false).getUserInfo();
+    Provider.of<BusProvider>(context, listen: false).getAllBus();
+    Provider.of<BusProvider>(context, listen: false).getAllNotification();
+    Provider.of<BusProvider>(context, listen: false).getAllNotice();
+    Provider.of<BusProvider>(context, listen: false).getAllSchedule();
+    Provider.of<AdminProvider>(context, listen: false).getAdminInfo();
+    Provider.of<BusProvider>(context, listen: false).getAllticketByUser();
     super.didChangeDependencies();
   }
+
   void initState() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      //print('Got a message whilst in the foreground!');
-      //print('Message data: ${message.data}');
 
       if (message.notification != null) {
-        //print('Message also contained a notification: ${message.notification}');
         NotificationService service = NotificationService();
         service.sendNotifications(message);
       }
@@ -47,50 +47,75 @@ class _DashboardPageState extends State<DashboardPage> {
     setupInteractedMessage();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(   bottomNavigationBar: CurvedNavigationBar(items:[
-      Icon(Icons.home,size: 25,color: Colors.white,),
-      Icon(Icons.route,size: 25,color: Colors.white,),
-      Icon(Icons.notifications,size: 25,color: Colors.white,),
-      Icon(Icons.person,size: 25,color: Colors.white,),
-    ],color: Colors.blue.shade200,backgroundColor: Colors.transparent,buttonBackgroundColor: Colors.red.shade200,
-      index: index,
-      height: 60,
-      onTap: (selectedIndex){
-        setState(() {
-          index=selectedIndex;
-        });
-      },
-    ),
-      body: getSelectedPage(index: index),);
+    return Scaffold(
+      bottomNavigationBar: CurvedNavigationBar(
+        items: [
+          Icon(
+            Icons.home,
+            size: 25,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.route,
+            size: 25,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.notifications,
+            size: 25,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.person,
+            size: 25,
+            color: Colors.white,
+          ),
+        ],
+        color: Colors.blue.shade200,
+        backgroundColor: Colors.transparent,
+        buttonBackgroundColor: Colors.red.shade200,
+        index: index,
+        height: 60,
+        onTap: (selectedIndex) {
+          setState(() {
+            index = selectedIndex;
+          });
+        },
+      ),
+      body: getSelectedPage(index: index),
+    );
   }
+
   Widget getSelectedPage({required int index}) {
     Widget widget;
-    switch(index){
+    switch (index) {
       case 0:
-        widget =HomePage();
+        widget = HomePage();
         break;
       case 1:
-        widget =RoutePage();
+        widget = RoutePage();
         break;
       case 2:
-        widget =NotificationPage();
+        widget = NotificationPage();
         break;
       case 3:
-        widget =ProfilePage();
+        widget = ProfilePage();
         break;
       default:
-        widget =HomePage();
+        widget = HomePage();
         break;
     }
     return widget;
   }
+
   Future<void> setupInteractedMessage() async {
     // Get any messages which caused the application to open from
     // a terminated state.
     RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
+        await FirebaseMessaging.instance.getInitialMessage();
 
     // If the message also contains a data property with a "type" of "chat",
     // navigate to a chat screen
@@ -102,30 +127,30 @@ class _DashboardPageState extends State<DashboardPage> {
     // Stream listener
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   }
+
   void _handleMessage(RemoteMessage message) {
     if (message.data['key'] == 'reqdeny') {
-      final id =message.data['value'];
+      final id = message.data['value'];
       print(id);
-      Provider.of<BusProvider>(context, listen: false).deleteRequestById(id).then((value)=>
-        Navigator.pushNamed(context, NotificationPage.routeName));
+
+              Navigator.pushNamed(context, NotificationPage.routeName);
       /*//final productModel = Provider.of<ProductProvider>(context, listen: false)
       .getProductByIdFromCache(id);*/
       Navigator.pushNamed(context, NotificationPage.routeName);
-    } else if (message.data['key'] =='reqaccept'
-    ) {
+    } else if (message.data['key'] == 'reqaccept') {
       final id = message.data['value'];
-      Provider.of<BusProvider>(context, listen: false)
-          .deleteRequestById(id)
-          .then((value) => Navigator.pushNamed(context, NotificationPage.routeName));
-    }
-    else if (message.data['key'] =='not'
-    ) {
+
+              Navigator.pushNamed(context, NotificationPage.routeName);
+    } else if (message.data['key'] == 'not') {
       final id = message.data['value'];
-     // Provider.of<BusProvider>(context, listen: false)
-         // .deleteRequestById(id)
-          //.then((value) =>
-          Navigator.pushNamed(context, NotificationPage.routeName);
+      // Provider.of<BusProvider>(context, listen: false)
+      // .deleteRequestById(id)
+      //.then((value) =>
+      Navigator.pushNamed(context, NotificationPage.routeName);
       //);
-    }
+    } else if (message.data['key'] == 'msgtoAdmin') {
+      final id = message.data['value'];
+      Navigator.pushNamed(context, QusenAnsPage.routeName,
+              );    }
   }
 }

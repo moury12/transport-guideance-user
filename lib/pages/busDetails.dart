@@ -57,7 +57,7 @@ scheduleModel =  ModalRoute.of(context)!.settings.arguments as ScheduleModel;
                   imageUrl: scheduleModel.busModel.busImage!,
                   placeholder: (context, url) =>
                       Center(child: CircularProgressIndicator()),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) =>Image.asset('assets/b.jpg'),
                 ),
                 Positioned( left: 0,
                   right: 0,
@@ -132,7 +132,9 @@ scheduleModel =  ModalRoute.of(context)!.settings.arguments as ScheduleModel;
              padding: const EdgeInsets.all(8.0),
              child: Text('Routes',style: TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.bold),textAlign: TextAlign.left,),
            ),
-            Image.network(scheduleModel.routes??'',height: 200,width:double.infinity,),
+            Image.network(scheduleModel.routes??'',height: 200,width:double.infinity,errorBuilder: (context, error, stackTrace) {
+              return SizedBox();
+            },),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text('Assigned Driver',style: TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.bold),textAlign: TextAlign.left,),

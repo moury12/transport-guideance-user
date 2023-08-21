@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 showMsg(BuildContext context, String msg) =>
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(margin: EdgeInsets.all(5),
-      content: Text(msg),backgroundColor: Colors.blue.shade200.withOpacity(0.5),
-      behavior: SnackBarBehavior.floating,));
+    Fluttertoast.showToast(
+          msg: msg,
+          toastLength:
+          Toast.LENGTH_SHORT, // Duration for which the toast should be visible
+          gravity: ToastGravity.BOTTOM, // Toast position
+          backgroundColor: Colors.black54, // Background color of the toast
+          textColor: Colors.white,
+          fontSize: 20, // Text color of the toast
+    );
 showSingleTextInputDialog({
       required BuildContext context,
       required String title,
@@ -65,11 +71,14 @@ abstract class NotificationuserType {
       static const String Notice = 'New Notice';
       static const String request = 'Accept Request';
       static const String deny = 'Deny Request';
+      static const String message = 'New message';
 }
+
 abstract class NotificationType {
       static const String comment = 'New Feedback';
       static const String order = 'New Request';
-      static const String user = 'New ticket';
+      static const String ticket = 'All Tickets Booked';
+      static const String message = 'New Message';
 }
 getFormattedDate(DateTime dt, {String pattern = 'dd/MM/yyyy'}) =>
     DateFormat(pattern).format(dt);

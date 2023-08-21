@@ -21,7 +21,6 @@ class BusProvider extends ChangeNotifier {
   List<NoticeModel> notice = [];
   List<TicketModel> tickets=[];
   List<TicketUserModel> usersTicket=[];
-  List<TicketItem> ticketitem=[];
   List<NotificationUSerModel> notuser = [];
   Future<RequestModel> getProductById(String id) async {
     final snapshot = await dbhelper.getreqById(id);
@@ -54,7 +53,8 @@ class BusProvider extends ChangeNotifier {
 
   getAllNotification(){
     dbhelper.getAllNotification().listen((snapshot) {
-      notuser=List.generate(snapshot.docs.length, (index) => NotificationUSerModel.fromMap(snapshot.docs[index].data()));
+      notuser=List.generate(snapshot.docs.length, (index) =>
+          NotificationUSerModel.fromMap(snapshot.docs[index].data()));
 
       notifyListeners();
     });
@@ -112,15 +112,24 @@ class BusProvider extends ChangeNotifier {
     await dbhelper.addTickets(ticket);
   }
 
-  Future<void> addUserTicket(TicketUserModel userTicket) async{
-return dbhelper.addUserTicket(userTicket);
+  Future<void> addUserTicket(ScheduleModel schedule, TicketModel ticketmodel) async{
+    final ticket=TicketUserModel
+      (id: ticketmodel.id,
+        time: schedule.startTime,
+        from: schedule.from, seatNumber: ticketmodel.seatNumber,
+        isBooked: true, rent: ticketmodel.rent!.toInt(),
+        to: schedule.destination,
+    BusName:schedule.busModel.busName ,
+    Bustype:schedule.busModel.busType );
+    return dbhelper.addUserTicket(AuthService.currentUser!.uid, ticket);
   }
-  getAllticketByUser() {
-    dbhelper.getAllticketByUser(AuthService.currentUser!.uid).listen((snapshot) {
-      usersTicket = List.generate(snapshot.docs.length,
-              (index) => TicketUserModel.fromMap(snapshot.docs[index].data()));
-      ticketitem=usersTicket.map((order) => TicketItem(ticketUserModel: order)).toList();
+  void getAllticketByUser() {
+    dbhelper.getAllTicketByUser(AuthService.currentUser!.uid).listen((snapshot){
+      usersTicket =List.generate(snapshot.docs.length, (index) => TicketUserModel.fromMap(snapshot.docs[index].data()));
       notifyListeners();
     });
   }
+
+
+
 }

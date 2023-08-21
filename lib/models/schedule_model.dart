@@ -23,7 +23,6 @@ class ScheduleModel {
   String? routes;
   String? semester;
   DriverModel? driverModel;
-  bool isBooked;
   List<TicketModel> tickets;
 
   ScheduleModel({required this.busModel,
@@ -32,7 +31,6 @@ class ScheduleModel {
     required this.departureTime,
     required this.from,
     required this.destination,
-    this.isBooked = false,
     this.tickets = const [],
     this.routes,
     this.semester,
@@ -71,9 +69,7 @@ class ScheduleModel {
             : DriverModel.fromMap(map[scheduleFielddriverModel]),
       );
 
-  void setBookedStatus(bool status) {
-    isBooked = status;
-  }
+
 
 
 }

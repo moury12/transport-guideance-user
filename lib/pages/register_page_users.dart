@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +24,8 @@ class _RegisterPageState extends State<RegisterPage> {
   'Student',
   'Faculty',
   ];
+
+
   String? designation;
   final _emailController = TextEditingController();
   final _nameController = TextEditingController();
@@ -148,6 +152,8 @@ late UserProvider userProvider;
     super.dispose();
   }
   void _register() async{
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+
     if(_formKey.currentState!.validate()){
       EasyLoading.show(status: 'please wait');
       final email=_emailController.text;
@@ -156,12 +162,17 @@ late UserProvider userProvider;
 
         UserCredential credential;
         credential=  await AuthService.register(email, password);
-        final userModel = UserModel(userId: credential.user!.uid, name: _nameController.text, email: credential.user!.email!, phone: _phoneController.text, designation: designation!,imageUrl:credential.user!.photoURL,isUser: true );
+        final userModel = UserModel(
+            userId: credential.user!.uid, name: _nameController.text,
+            email: credential.user!.email!, phone: _phoneController.text,
+            designation: designation!,imageUrl:credential.user!.photoURL,
+            isUser: true ,userToken: fcmToken );
         await userProvider.addUser(userModel);
         EasyLoading.dismiss();
         if(mounted){
           showMsg(context, "congratulations, you registered");
           Navigator.pushReplacementNamed(context, LoginPage.routeName);
+          _saveUserFCMTokenToFirestore();
         }
       }on FirebaseAuthException catch(error){
         EasyLoading.dismiss();
@@ -172,4 +183,22 @@ late UserProvider userProvider;
 
     }
   }
+  @override
+  void initState() {
+    _saveUserFCMTokenToFirestore();
+
+    super.initState();
+  }
+  void _saveUserFCMTokenToFirestore() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
+      final user = FirebaseAuth.instance.currentUser;
+      final userDocument = FirebaseFirestore.instance.collection(collectionUser).doc(user!.uid);
+
+      // Update the FCM token in the user document
+      userDocument.update({
+        userFieldtoken: fcmToken,
+      });
+    }
+    );}
 }

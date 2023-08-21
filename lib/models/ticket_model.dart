@@ -48,9 +48,3 @@ class TicketModel {
     );
   }
 }
-class TicketItem{
-  TicketUserModel ticketUserModel;
-  bool isExpanded;
-
-  TicketItem({required this.ticketUserModel, this.isExpanded=false});
-}

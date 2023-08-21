@@ -1,19 +1,19 @@
 
 
 
-import 'package:transport_guidance_user/models/reqModel.dart';
-
+import 'message_model.dart';
 import 'notice_model.dart';
+import 'reqModel.dart';
 
-const String collectionNotificationUser = 'Notifications User';
+const String collectionNotificationUser = 'NotificationUser';
 
 const String notificationFieldId = 'notificationId';
 const String notificationFieldType = 'type';
-const String notificationFieldMessage = 'Message';
+const String notificationFieldMessage = 'message';
 const String notificationFielduserStatus = 'status';
 const String notificationuserFieldDate = 'Date';
 const String notificationFieldComment = 'Notice';
-//const String notificationFieldUser = 'user';
+const String notificationFieldUser = 'Message';
 const String notificationFieldOrder = 'request';
 
 class NotificationUSerModel {
@@ -22,19 +22,18 @@ class NotificationUSerModel {
   String message;
   bool status;
   NoticeModel? noticeModel;
-  //UserModel? userModel;
+  MessageModel? msgModel;
   RequestModel? reqModel;
   String date;
 
   NotificationUSerModel({
-
-     this.id,
+    this.id,
     required this.date,
     required this.type,
     required this.message,
     this.status = false,
     this.noticeModel,
-    //this.userModel,
+    this.msgModel,
     this.reqModel,
   });
 
@@ -45,8 +44,8 @@ class NotificationUSerModel {
       notificationFieldMessage: message,
       notificationFielduserStatus: status,
       notificationuserFieldDate: date,
-     // notificationFieldComment: noticeModel?.toMap(),
-     // notificationFieldUser: userModel?.toMap(),
+      // notificationFieldComment: noticeModel?.toMap(),
+      notificationFieldUser: msgModel?.toMap(),
       notificationFieldOrder: reqModel?.toMap(),
     };
   }
@@ -61,13 +60,11 @@ class NotificationUSerModel {
         // noticeModel: map[notificationFieldComment] == null
         //     ? null
         //     : NoticeModel.fromMap(map[notificationFieldComment]),
-        // userModel: map[notificationFieldUser] == null
-        //     ? null
-             // : UserModel.fromMap(map[notificationFieldUser]),
-         reqModel: map[notificationFieldOrder] == null
+        msgModel: map[notificationFieldUser] == null
+            ? null
+            : MessageModel.fromMap(map[notificationFieldUser]),
+        reqModel: map[notificationFieldOrder] == null
             ? null
             : RequestModel.fromMap(map[notificationFieldOrder]),
       );
 }
-
-

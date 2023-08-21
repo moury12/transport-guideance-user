@@ -4,6 +4,8 @@
 
 
 
+import 'package:transport_guidance_user/models/message_model.dart';
+
 import 'feedback_model.dart';
 import 'reqModel.dart';
 import 'userModel.dart';
@@ -18,6 +20,7 @@ const String notificationFieldDate = 'Date';
 const String notificationFieldComment = 'feedback';
 const String notificationFieldUser = 'user';
 const String notificationFieldOrder = 'request';
+const String notificationFieldmsg = 'Messages';
 
 class NotificationModel {
   String id;
@@ -27,6 +30,7 @@ class NotificationModel {
   FeedbackModel? feedbackModel;
   UserModel? userModel;
   RequestModel? reqModel;
+  MessageModel? msgModel;
   String? date;
 
 
@@ -38,6 +42,7 @@ class NotificationModel {
       this.feedbackModel,
       this.userModel,
       this.reqModel,
+      this.msgModel,
       this.date});
 
   Map<String, dynamic> toMap() {
@@ -50,6 +55,7 @@ class NotificationModel {
       notificationFieldComment: feedbackModel?.toMap(),
       notificationFieldUser: userModel?.toMap(),
       notificationFieldOrder: reqModel?.toMap(),
+      notificationFieldmsg: msgModel?.toMap(),
     };
   }
 
@@ -69,5 +75,8 @@ class NotificationModel {
         reqModel: map[notificationFieldOrder] == null
             ? null
             : RequestModel.fromMap(map[notificationFieldOrder]),
+        msgModel: map[notificationFieldmsg] == null
+            ? null
+            : MessageModel.fromMap(map[notificationFieldmsg]),
       );
 }
